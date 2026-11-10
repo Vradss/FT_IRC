@@ -229,7 +229,7 @@ void Server::handleRead(int fd)
         return;
     Client &client = it->second;
 
-    char    buf[512];
+    char    buf[1024];
     ssize_t n = recv(fd, buf, sizeof(buf), 0); //los bytes del mesnsaje OJITO
     if (n <= 0)                             // 0 = el cliente cerro; <0 = error. Sin errno.
     {
@@ -238,15 +238,17 @@ void Server::handleRead(int fd)
     }
 
     //gaaaaa
-    handleLine(client, std::string(buf, n));
+    //handleLine(client, std::string(buf, n));
     //pruebassss para ver que pasa 
-    // client.appendInput(buf, static_cast<size_t>(n)); // los mete al inbuffer para que no se pierde
 
-    // // Puede haber 0, 1 o varias lineas completas en el buffer.
-    // std::string line;
-    // while (!client.shouldClose() && client.extractLine(line))
-    //     if (!line.empty())
-    //         handleLine(client, line);
+
+    client.appendInput(buf, static_cast<size_t>(n)); // los mete al inbuffer para que no se pierde
+
+    // Puede haber 0, 1 o varias lineas completas en el buffer.
+    std::string line;
+    while (!client.shouldClose() && client.extractLine(line))
+        if (!line.empty())
+            handleLine(client, line);
 
     if (client.inputSize() > IRC_MAX_INPUT)
         disconnect(client, "input too long");
