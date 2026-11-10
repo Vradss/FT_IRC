@@ -1,0 +1,27 @@
+{
+  "includes/Client.hpp": {
+    "mtime": 1794262365.026926,
+    "ast_hash": "8213030a140b17ae21bcf8da253184be",
+    "semantic_hash": "8213030a140b17ae21bcf8da253184be"
+  },
+  "includes/Server.hpp": {
+    "mtime": 1794259077.0251234,
+    "ast_hash": "85204271b021f451506eac7c24b5c750",
+    "semantic_hash": "85204271b021f451506eac7c24b5c750"
+  },
+  "srcs/Client.cpp": {
+    "mtime": 1794259041.91013,
+    "ast_hash": "fef1d95d96a3516ea2d98b9020cd0b16",
+    "semantic_hash": "fef1d95d96a3516ea2d98b9020cd0b16"
+  },
+  "srcs/Server.cpp": {
+    "mtime": 1794259746.0985837,
+    "ast_hash": "3b983395e349868a152aacd0b266a4eb",
+    "semantic_hash": "3b983395e349868a152aacd0b266a4eb"
+  },
+  "srcs/main.cpp": {
+    "mtime": 1794259077.0264854,
+    "ast_hash": "dec8daa57174e6107ccb6219e9cf2faa",
+    "semantic_hash": "dec8daa57174e6107ccb6219e9cf2faa"
+  }
+}
