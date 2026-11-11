@@ -62,6 +62,9 @@ class Client
         std::string _inBuffer;   ///< Bytes recibidos sin '\n' todavia del cliente
         std::string _outBuffer;  ///< Bytes pendientes de send().
         bool        _toClose;    ///< true = cerrar en removeClosedClients().
+
+    //AURORA:
+    
 };
 
 #endif

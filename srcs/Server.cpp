@@ -354,3 +354,7 @@ Client *Server::findByNick(const std::string &nick)
 }
 
 const std::string &Server::getPassword() const { return _password; }
+
+
+//aurora aqui abajito para no molestar: 
+

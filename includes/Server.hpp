@@ -46,6 +46,12 @@ class Server
         Client              *findByNick(const std::string &nick);
         const std::string   &getPassword() const;
 
+        /**
+         * métodos relacionados con el canal
+         * devolverán int para poder errores 
+        */
+        int joinChannel(const std::string &chName, const std::string &key); 
+
     private:
 
         //Estados, evaluar si necesitamo mas? 
@@ -76,6 +82,7 @@ class Server
 
         Server(const Server &);
         Server &operator=(const Server &);
-    };
+
+};
 
 #endif
