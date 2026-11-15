@@ -9,6 +9,9 @@
 #include <cctype>
 #include <stdexcept>
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 /**
  * @file Server.cpp
@@ -285,8 +288,19 @@ void Server::handleWrite(int fd)
  */
 void Server::handleLine(Client &client, const std::string &line)
 {
+    /*
     std::cout << "[fd " << client.getFd() << "] line: \"" << line << "\"" << std::endl;
     sendTo(client, ":ircserv recibiendo señal prroos: " + line);
+    */
+    std::istringstream iss(line);
+    std::string command, word;
+    std::vector<std::string> params;
+
+    iss >> command;
+    while (iss >> word)
+        params.push_back(word);
+
+    dispatcher(&client, command, params);
 }
 
 /* ========================== Cierre diferido ========================== */
@@ -354,7 +368,3 @@ Client *Server::findByNick(const std::string &nick)
 }
 
 const std::string &Server::getPassword() const { return _password; }
-
-
-//aurora aqui abajito para no molestar: 
-
