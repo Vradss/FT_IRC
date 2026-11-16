@@ -6,7 +6,7 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 22:06:28 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/16 23:14:03 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/16 23:57:57 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,8 @@ void Server::privateMessage(Client *client, const std::vector<std::string> &para
 
 
         //si es un canal: 
-        //TO-DO: añadir las máscaras con &
-        if (target[0] == '#')
+        //TO-DO: añadir las máscaras con & done 
+        if (target[0] == '#' || target[0] == '&')
         {
             Channel *channel = findChannel(target);
             //vemos si existe el canal

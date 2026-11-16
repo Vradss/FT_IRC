@@ -6,7 +6,7 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 21:59:48 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/14 11:47:35 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/16 23:44:17 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static bool isValidChannelName(const std::string &name)
 {
     if (name.size() < 2 || name.size() > 50)
         return false;
-    if (name[0] != '#')
+    if (name[0] != '#' && name[0] != '&')
         return false;
     for (size_t i = 1; i < name.size(); ++i)
     {
