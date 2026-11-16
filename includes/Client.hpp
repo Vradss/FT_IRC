@@ -65,6 +65,15 @@ class Client
         bool isRegistered() const;
         bool isMarkedForDisconnect() const; // esto para ver el estado   
         void markForDisconnect(); //esto para marcarlo como desconectado
+        bool isAuthenticated() const;
+        void setAuthenticated(bool value);
+        //void setNick(const std::string &nick); ya está
+        void setWelcomed(bool value);
+        bool hasWelcomed() const;
+        const std::map<std::string, Channel *> &getChannels() const; // lo uso en handleNick para saber a quien aviso 
+        const std::string &getUsername() const;
+        void setUsername(const std::string &username);
+        void setRealname(const std::string &realname); //PARA USER 
 
     private:
         int         _fd;         ///< Socket TCP del cliente. Lo cierra Server, no Client.
@@ -79,6 +88,8 @@ class Client
         std::string _hostname; 
         bool _authenticated; // esto ponerlo a true cuando el user se autentique con la PASS del server si no puede pasar por logado y no 
         bool _markedForDisconnect;  //para si un comando es QUIT y ya el cliente lo marcó como desconectau para que no se ejecute nada más del buffer
+        bool _welcomed; 
+        std::string _realname; //para USER 
     
 };
 

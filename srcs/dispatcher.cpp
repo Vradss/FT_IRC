@@ -6,7 +6,7 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 12:02:18 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/15 13:37:59 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/16 21:34:01 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,16 +110,18 @@ void Server::dispatcher(Client *client, const std::string &command, const std::v
    
     //toda esta parte no sé si la meteré mejor en un switch que se vea más mono 
     // TO-DO: VER SI SE ME HA OLVIDADO ALGUN COMANDO
-    // TO-DO: PRIVMESSAGE ??? 
+    // TO-DO: PRIVMESSAGE Y PART
     if (cmd == "JOIN")
         handleJoin(client, params); 
-    // else if (cmd == "PASS")   handlePass(client, params);
-    // else if (cmd == "NICK")   handleNick(client, params);
-    // else if (cmd == "USER")   handleUser(client, params);
-    // else if (cmd == "INVITE") handleInvite(client, params);
-    // else if (cmd == "TOPIC")  handleTopic(client, params);
+    else if (cmd == "PASS")   
+        handlePass(client, params);
+    else if (cmd == "NICK")   handleNick(client, params); 
+    else if (cmd == "USER")   handleUser(client, params);
+    // else if (cmd == "INVITE") handleInvite(client, params); *
+    // else if (cmd == "TOPIC")  handleTopic(client, params); *
     // else if (cmd == "MODE")   handleMode(client, params);
-    // else if (cmd == "KICK")   handleKick(client, params);
+    // else if (cmd == "KICK")   handleKick(client, params); *
+    // else if (cmd == "PRIVMSG")   handleKick(client, params); 
     else
         client->queueMessage(srv + "421 " + nick + " " + command + " :Unknown command\r\n");
 }

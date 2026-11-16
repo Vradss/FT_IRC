@@ -6,7 +6,7 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 19:27:38 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/15 13:05:56 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/15 20:11:34 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ class Channel
         bool _hasChKey; //esto igual por si me mandan una clave y el canan no tiene clave? 
         bool _chInviteOnly; 
         size_t _chUserLimit;
+        
 
     public:
         //constructores
@@ -79,7 +80,7 @@ class Channel
         size_t getUserLimit() const;
         bool isInvited(Client *client) const;
         void removeInvite(Client *client);
-        
+
 
 };
 

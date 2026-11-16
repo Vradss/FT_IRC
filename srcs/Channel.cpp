@@ -6,7 +6,7 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 20:25:49 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/15 13:12:10 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/15 20:11:46 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,3 +179,4 @@ size_t Channel::getUserLimit() const
 {
     return _chUserLimit;
 }
+

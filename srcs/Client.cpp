@@ -72,6 +72,7 @@ void Client::markToClose() { _toClose = true; }
 bool Client::shouldClose() const { return _toClose; }
 
 
+//aurora 
 void Client::addChannel(const std::string &name, Channel *channel)
 {
     if (!channel)
@@ -112,4 +113,62 @@ bool Client::isMarkedForDisconnect() const
 void Client::markForDisconnect()
 {
     _markedForDisconnect = true;
+}
+
+/**
+ * métodos para comprobar si está auth
+ * (esto servirá para el nick y user para que nos deje registrarnos)
+ */
+bool Client::isAuthenticated() const
+{
+    return _authenticated;
+}
+
+/*
+    una vez la contraseña sea correcta o no, le marcamos el value para saber 
+*/
+void Client::setAuthenticated(bool value)
+{
+    _authenticated = value;
+}
+
+/**METODOS PARA SABER SI HACEMOS LA BIENVENIDA O NO */
+bool Client::hasWelcomed() const
+{
+    return _welcomed;
+}
+
+void Client::setWelcomed(bool value)
+{
+    _welcomed = value;
+}
+
+/*
+void Client::setNick(const std::string &nick)
+{
+    _nick = nick;               // se guarda TAL CUAL lo escribió el usuario
+}
+*/
+
+// Solo lectura: lo usa handleNick para saber a quién avisar de que alguien se ha modificado el nick
+// _clientChannels es std::map<std::string, Channel*> 
+const std::map<std::string, Channel *> &Client::getChannels() const
+{
+    return _clientChannels;
+}
+
+
+const std::string &Client::getUsername() const
+{
+    return _username;
+}
+
+void Client::setUsername(const std::string &username)
+{
+    _username = username;
+}
+
+void Client::setRealname(const std::string &realname)
+{
+    _realname = realname;
 }
