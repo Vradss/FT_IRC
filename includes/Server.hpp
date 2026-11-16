@@ -63,7 +63,8 @@ class Server
         void handleUser(Client *client, const std::vector<std::string> &params);
         void completeRegistration(Client *client);
 
-
+        void privateMessage(Client *client, const std::vector<std::string> &params);
+        Channel *findChannel(const std::string &name);
 
     private:
 
