@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "Parser.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -292,15 +293,23 @@ void Server::handleLine(Client &client, const std::string &line)
     std::cout << "[fd " << client.getFd() << "] line: \"" << line << "\"" << std::endl;
     sendTo(client, ":ircserv recibiendo señal prroos: " + line);
     */
-    std::istringstream iss(line);
-    std::string command, word;
-    std::vector<std::string> params;
+    
+	Instruction instruction ;
+	std::string err_msg;
+	bool parsing = Parser::parse(line, instruction , err_msg);
+	
+	//DEBUGGING
+	/*
+	*if (parsing == true)
+	*	print_instruction (instruction );
+	*else
+	*	std::cout << "Error: " << err_msg << std::endl;
+	*/
 
-    iss >> command;
-    while (iss >> word)
-        params.push_back(word);
-
-    dispatcher(&client, command, params);
+	if (parsing == true)
+    	dispatcher(&client, instruction.command, instruction.parameters); // Reemplazar los dos últimos parámetros por el struct en lugar de sus miembros por separado
+	//else
+		// Printear error? Salir?
 }
 
 /* ========================== Cierre diferido ========================== */
