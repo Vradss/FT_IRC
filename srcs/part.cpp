@@ -6,7 +6,7 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 19:53:20 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/17 20:30:01 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/17 22:09:57 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static std::vector<std::string> splitByComma(const std::string &s)
 }
 
 
-std::string toLower(const std::string &s)
+static std::string toLower(const std::string &s)
 {
     std::string result(s);
     for (size_t i = 0; i < result.size(); ++i)

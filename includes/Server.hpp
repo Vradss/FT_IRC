@@ -69,6 +69,8 @@ class Server
         void handlePart(Client *client, const std::vector<std::string> &params);
         void leaveChannel(Client *client, Channel *channel);
 
+        void handleKick(Client *client, const std::vector<std::string> &params);
+
     private:
 
         //Estados, evaluar si necesitamo mas? 
