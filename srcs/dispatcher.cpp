@@ -6,7 +6,7 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 12:02:18 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/16 22:13:00 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/17 20:33:58 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ void Server::dispatcher(Client *client, const std::string &command, const std::v
     // else if (cmd == "MODE")   handleMode(client, params);
     // else if (cmd == "KICK")   handleKick(client, params); *
     else if (cmd == "PRIVMSG")   privateMessage(client, params); 
+    else if (cmd == "PART")   handlePart(client, params);
     else
         client->queueMessage(srv + "421 " + nick + " " + command + " :Unknown command\r\n");
 }

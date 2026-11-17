@@ -172,3 +172,8 @@ void Client::setRealname(const std::string &realname)
 {
     _realname = realname;
 }
+
+void Client::removeChannel(const std::string &name)
+{
+    _clientChannels.erase(name);
+}

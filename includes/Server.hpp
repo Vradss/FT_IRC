@@ -66,6 +66,9 @@ class Server
         void privateMessage(Client *client, const std::vector<std::string> &params);
         Channel *findChannel(const std::string &name);
 
+        void handlePart(Client *client, const std::vector<std::string> &params);
+        void leaveChannel(Client *client, Channel *channel);
+
     private:
 
         //Estados, evaluar si necesitamo mas? 

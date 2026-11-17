@@ -72,6 +72,10 @@ Server::Server(int port, const std::string &password)
  */
 Server::~Server()
 {
+    for (std::map<std::string, Channel *>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+        delete it->second;
+    _channels.clear();
+    
     for (size_t i = 0; i < _fds.size(); ++i)
         close(_fds[i].fd);
     std::cout << "Server closed" << std::endl;

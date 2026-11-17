@@ -27,7 +27,8 @@ SRCS     = main.cpp \
 		   dispatcher.cpp \
 		   join.cpp \
 		   register.cpp \
-		   privmsg.cpp
+		   privmsg.cpp \
+		   part.cpp
 
 OBJ_DIR = obj
 OBJS     = $(addprefix $(OBJ_DIR)/, $(SRCS:.cpp=.o))
