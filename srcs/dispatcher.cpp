@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dispatcher.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: vrads <vrads@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 12:02:18 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/16 22:13:00 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/18 14:45:19 by vrads            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,15 @@
  *     nunca dentro de un handler.
  */
 
-// esto borrar porque igual lo hizo césar 
-static std::string toUpperStr(const std::string &s)
-{
-    std::string result(s);
-    for (size_t i = 0; i < result.size(); ++i)
-        result[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(result[i])));
-    return result;
-}
+// esto borrar porque igual lo hizo césar
+//comentado para no eliminarlo 
+// static std::string toUpperStr(const std::string &s)
+// {
+//     std::string result(s);
+//     for (size_t i = 0; i < result.size(); ++i)
+//         result[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(result[i])));
+//     return result;
+// }
 
 
 // Comandos que se admiten ANTES de estar registrado. TO-DO: ver que son todos correctos
@@ -87,7 +88,9 @@ void Server::dispatcher(Client *client, const std::string &command, const std::v
         return;
 
     /*ESTO VERLO CON CÉSAR QUE IGUAL LO HACE ÉL */
-    const std::string cmd = toUpperStr(command);
+    //si, ya lo hace cesar en parser.cpp
+    //const std::string cmd = toUpperStr(command);
+    const std::string &cmd = command;
 
     //aqui pongo bien el formto y tal para si el user no está registrado 
     // TO-DO: tengo que quitar del joinChannel esto 
@@ -123,5 +126,5 @@ void Server::dispatcher(Client *client, const std::string &command, const std::v
     // else if (cmd == "KICK")   handleKick(client, params); *
     else if (cmd == "PRIVMSG")   privateMessage(client, params); 
     else
-        client->queueMessage(srv + "421 " + nick + " " + command + " :Unknown command\r\n");
+        client->queueMessage(srv + "no reconoce comando : cod421 " + nick + " " + command + " :Unknown command\r\n");
 }

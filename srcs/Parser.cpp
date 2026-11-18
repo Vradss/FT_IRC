@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarro-d <ccarro-d@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: vrads <vrads@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/13 00:51:04 by ccarro-d          #+#    #+#             */
-/*   Updated: 2026/11/17 21:27:20 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2026/11/18 14:37:12 by vrads            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ bool Parser::parse(const std::string& input, Instruction& instruction , std::str
 				if (command_candidate(token) == false)
 					break;
 				else
-					to_upper(token);
+					to_upper(token); //aqui ya le mete cesar UPPERCASE 
 				parsed.command = token;
 				commandFound = true;
 			}

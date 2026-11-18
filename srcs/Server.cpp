@@ -40,7 +40,8 @@
 
 extern volatile sig_atomic_t g_running;     ///< Definido en main.cpp; Ctrl+C lo pone a 0.
 
-static const size_t IRC_MAX_INPUT = 1024;   ///< Proteccion contra lineas sin fin.
+static const size_t IRC_MAX_INPUT = 512;   ///< Proteccion contra lineas sin fin.
+//IRC messages shall not exceed 512 characters in length,
 
 /**
  * @brief Copia de s en minusculas (los nicks IRC no distinguen mayusculas).
@@ -233,7 +234,7 @@ void Server::handleRead(int fd)
         return;
     Client &client = it->second;
 
-    char    buf[1024];
+    char    buf[1024]; //bytes por recv
     ssize_t n = recv(fd, buf, sizeof(buf), 0); //los bytes del mesnsaje OJITO
     if (n <= 0)                             // 0 = el cliente cerro; <0 = error. Sin errno.
     {
@@ -241,18 +242,17 @@ void Server::handleRead(int fd)
         return;
     }
 
-    //gaaaaa
-    //handleLine(client, std::string(buf, n));
-    //pruebassss para ver que pasa 
-
-
     client.appendInput(buf, static_cast<size_t>(n)); // los mete al inbuffer para que no se pierde
 
     // Puede haber 0, 1 o varias lineas completas en el buffer.
     std::string line;
-    while (!client.shouldClose() && client.extractLine(line))
+    while (!client.shouldClose() && client.extractLine(line)) //sacamos linea una en una 
+    {
+        if (line.size() > 510) // para respetar el protofoloc irc
+            line.erase(510); // no la eliminamos sino que la achicamos, contamos como 2 bytes los \r\n        
         if (!line.empty())
-            handleLine(client, line);
+            handleLine(client, line); //cada linea se parsea y se dispatcher
+    }
 
     if (client.inputSize() > IRC_MAX_INPUT)
         disconnect(client, "input too long");
@@ -289,14 +289,13 @@ void Server::handleWrite(int fd)
  */
 void Server::handleLine(Client &client, const std::string &line)
 {
-    /*
+    //DEBUG
     std::cout << "[fd " << client.getFd() << "] line: \"" << line << "\"" << std::endl;
-    sendTo(client, ":ircserv recibiendo señal prroos: " + line);
-    */
+
     
 	Instruction instruction ;
 	std::string err_msg;
-	bool parsing = Parser::parse(line, instruction , err_msg);
+	//bool parsing = Parser::parse(line, instruction , err_msg);
 	
 	//DEBUGGING
 	/*
@@ -306,10 +305,23 @@ void Server::handleLine(Client &client, const std::string &line)
 	*	std::cout << "Error: " << err_msg << std::endl;
 	*/
 
-	if (parsing == true)
-    	dispatcher(&client, instruction.command, instruction.parameters); // Reemplazar los dos últimos parámetros por el struct en lugar de sus miembros por separado
-	//else
+	// if (parsing == true)
+    // 	dispatcher(&client, instruction.command, instruction.parameters); // Reemplazar los dos últimos parámetros por el struct en lugar de sus miembros por separado
+	// //else
 		// Printear error? Salir?
+
+    // línea mal formada: se ignora (el servidor nunca se cae ni desconecta)
+    //RFC no define un error para eso. Los comandos bien formados pero desconocidos los
+    // responde el dispatcher con 421.
+    if (!Parser::parse(line, instruction, err_msg))
+        return;
+
+    // ver cómo queda troceada la línea
+    std::cout << "    command: [" << instruction.command << "]" << std::endl;
+    for (size_t i = 0; i < instruction.parameters.size(); ++i)
+        std::cout << "    param[" << i << "]: [" << instruction.parameters[i] << "]" << std::endl;
+
+    dispatcher(&client, instruction.command, instruction.parameters);
 }
 
 /* ========================== Cierre diferido ========================== */
