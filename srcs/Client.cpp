@@ -20,7 +20,8 @@
  */
 
 /** @details Llamada por: Server::acceptClient(). _toClose empieza en false. */
-Client::Client(int fd) : _fd(fd), _toClose(false) {}
+Client::Client(int fd) : _fd(fd), _toClose(false), _authenticated(false),
+      _markedForDisconnect(false), _welcomed(false)  {}
 
 int Client::getFd() const { return _fd; }
 
@@ -176,4 +177,14 @@ void Client::setRealname(const std::string &realname)
 void Client::removeChannel(const std::string &name)
 {
     _clientChannels.erase(name);
+}
+
+void Client::setQuitReason(const std::string &reason)
+{
+    _quitReason = reason;
+}
+
+const std::string &Client::getQuitReason() const
+{
+    return _quitReason;
 }
