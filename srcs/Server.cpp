@@ -1,5 +1,5 @@
 #include "Server.hpp"
-#include "ParserFake.hpp"   // [INTEGRACION][PARSER FAKE] cambiar por el header del parser de César
+#include "Parser.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -293,35 +293,23 @@ void Server::handleLine(Client &client, const std::string &line)
     std::cout << "[fd " << client.getFd() << "] line: \"" << line << "\"" << std::endl;
     sendTo(client, ":ircserv recibiendo señal prroos: " + line);
     */
+    
+	Instruction instruction ;
+	std::string err_msg;
+	bool parsing = Parser::parse(line, instruction , err_msg);
+	
+	//DEBUGGING
+	/*
+	*if (parsing == true)
+	*	print_instruction (instruction );
+	*else
+	*	std::cout << "Error: " << err_msg << std::endl;
+	*/
 
-    /* ================= [INTEGRACION] RED -> PARSER -> COMANDOS =================
-     *
-     *  Aqui se unen las tres partes:
-     *    RED      (Persona A): handleRead() ya nos da UNA linea completa, sin \r\n
-     *    PARSER   (César)    : Parser::parse() la trocea en command + params
-     *    COMANDOS (Aurora)   : dispatcher() elige el handler (PASS, NICK, JOIN...)
-     *
-     *  ANTES se troceaba con istringstream por espacios, y eso rompia:
-     *    USER aurora 0 * :Aurora Moreno   -> params[3] = ":Aurora"   (MAL)
-     *    PRIVMSG #a :hola que tal         -> params[1] = ":hola"     (MAL)
-     *  El parser respeta el trailing (':'): params[3] = "Aurora Moreno".
-     *
-     *  [PARSER FAKE] De momento es el parser de prueba (srcs/ParserFake.cpp).
-     *  Cuando llegue el de César, este bloque no deberia cambiar.
-     * ========================================================================== */
-
-    std::cout << "[fd " << client.getFd() << "] << " << line << std::endl;   // [DEBUG] ver lo que manda irssi
-
-    Instruction instr;
-    std::string err;
-    std::string copy(line);         // parse() pide std::string& (no const)
-
-    if (!Parser::parse(copy, instr, err))
-        return;                     // linea vacia o invalida: se ignora en silencio
-
-    dispatcher(&client, instr.command, instr.params);
-
-    /* ======================== [FIN INTEGRACION] ======================== */
+	if (parsing == true)
+    	dispatcher(&client, instruction.command, instruction.parameters); // Reemplazar los dos últimos parámetros por el struct en lugar de sus miembros por separado
+	//else
+		// Printear error? Salir?
 }
 
 /* ========================== Cierre diferido ========================== */
