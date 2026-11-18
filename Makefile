@@ -27,7 +27,9 @@ SRCS     = main.cpp \
 		   dispatcher.cpp \
 		   join.cpp \
 		   register.cpp \
-		   privmsg.cpp
+		   privmsg.cpp \
+		   ParserFake.cpp
+# [INTEGRACION][PARSER FAKE] cambiar ParserFake.cpp por el .cpp del parser de César
 
 OBJ_DIR = obj
 OBJS     = $(addprefix $(OBJ_DIR)/, $(SRCS:.cpp=.o))

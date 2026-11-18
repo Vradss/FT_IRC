@@ -20,7 +20,18 @@
  */
 
 /** @details Llamada por: Server::acceptClient(). _toClose empieza en false. */
-Client::Client(int fd) : _fd(fd), _toClose(false) {}
+/*
+ * [INTEGRACION] Faltaba inicializar los bools que añadió Aurora (Persona B).
+ * En C++ un bool sin inicializar tiene BASURA: a veces true, a veces false.
+ * Sintomas que daba:
+ *   - _welcomed = true  -> nunca se mandaba el 001 (irssi no conecta)
+ *   - _markedForDisconnect = true -> el dispatcher ignoraba TODOS los comandos
+ *   - _authenticated = true -> se podia registrar sin PASS
+ */
+Client::Client(int fd)
+    : _fd(fd), _toClose(false),
+      _authenticated(false), _markedForDisconnect(false), _welcomed(false)   // [INTEGRACION]
+{}
 
 int Client::getFd() const { return _fd; }
 
