@@ -23,13 +23,14 @@ SRCS     = main.cpp \
            Server.cpp \
            Client.cpp \
 		   Channel.cpp \
+		   Parser.cpp \
 		   join_utils.cpp \
 		   dispatcher.cpp \
 		   join.cpp \
 		   register.cpp \
 		   privmsg.cpp \
 		   part.cpp \
-		   kick.cpp
+		   kick.cpp 
 
 OBJ_DIR = obj
 OBJS     = $(addprefix $(OBJ_DIR)/, $(SRCS:.cpp=.o))
