@@ -74,6 +74,7 @@ class Client
         const std::string &getUsername() const;
         void setUsername(const std::string &username);
         void setRealname(const std::string &realname); //PARA USER 
+        void removeChannel(const std::string &name); //quitamos el canal de la lista de canales del usuario 
 
     private:
         int         _fd;         ///< Socket TCP del cliente. Lo cierra Server, no Client.

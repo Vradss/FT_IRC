@@ -6,7 +6,7 @@
 /*   By: vrads <vrads@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 12:02:18 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/18 14:45:19 by vrads            ###   ########.fr       */
+/*   Updated: 2026/11/18 15:26:28 by vrads            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,13 +118,19 @@ void Server::dispatcher(Client *client, const std::string &command, const std::v
         handleJoin(client, params); 
     else if (cmd == "PASS")   
         handlePass(client, params);
-    else if (cmd == "NICK")   handleNick(client, params); 
-    else if (cmd == "USER")   handleUser(client, params);
+    else if (cmd == "NICK")   
+        handleNick(client, params); 
+    else if (cmd == "USER")   
+        handleUser(client, params);
     // else if (cmd == "INVITE") handleInvite(client, params); *
     // else if (cmd == "TOPIC")  handleTopic(client, params); *
     // else if (cmd == "MODE")   handleMode(client, params);
-    // else if (cmd == "KICK")   handleKick(client, params); *
-    else if (cmd == "PRIVMSG")   privateMessage(client, params); 
+    else if (cmd == "KICK")   
+        handleKick(client, params); 
+    else if (cmd == "PRIVMSG")   
+        privateMessage(client, params); 
+    else if (cmd == "PART")   
+        handlePart(client, params);
     else
-        client->queueMessage(srv + "no reconoce comando : cod421 " + nick + " " + command + " :Unknown command\r\n");
+        client->queueMessage(srv + "421 " + nick + " " + command + " :Unknown command\r\n");
 }

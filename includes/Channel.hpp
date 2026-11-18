@@ -6,7 +6,7 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 19:27:38 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/15 20:11:34 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/17 20:27:47 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,9 @@ class Channel
         bool isInvited(Client *client) const;
         void removeInvite(Client *client);
 
+        void removeUser(Client *client);
+        void removeOperator(Client *client);
+        bool isEmpty() const;
 
 };
 

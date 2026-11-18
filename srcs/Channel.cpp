@@ -6,7 +6,7 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 20:25:49 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/15 20:11:46 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/17 20:27:31 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,5 +178,27 @@ bool Channel::hasUserLimit() const
 size_t Channel::getUserLimit() const
 {
     return _chUserLimit;
+}
+
+
+void Channel::removeUser(Client *client)
+{
+    if (!client)
+        return;
+    _chUsers.erase(client->getFd());
+}
+
+// Quita al cliente de la lista de operadores
+void Channel::removeOperator(Client *client)
+{
+    if (!client)
+        return;
+    _chOperators.erase(client->getFd());
+}
+
+// si el canal está vacio, esto es para sabe si borro o no el canal 
+bool Channel::isEmpty() const
+{
+    return _chUsers.empty();
 }
 
