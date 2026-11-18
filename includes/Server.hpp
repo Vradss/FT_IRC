@@ -75,9 +75,10 @@ class Server
         void handleQuit(Client *client, const std::vector<std::string> &params);
 
         void handlePing(Client *client, const std::vector<std::string> &params);
+        void handlePong(Client *, const std::vector<std::string> &);
+        void handleCap(Client *client, const std::vector<std::string> &params);
 
     private:
-
         //Estados, evaluar si necesitamo mas? 
         int                         _port;      ///< Puerto en el que escuchamos.
         std::string                 _password;  ///< Contraseña de ./ircserv <port> <password>.
