@@ -74,6 +74,8 @@ class Server
         void cleanupClient(Client *client);
         void handleQuit(Client *client, const std::vector<std::string> &params);
 
+        void handlePing(Client *client, const std::vector<std::string> &params);
+
     private:
 
         //Estados, evaluar si necesitamo mas? 

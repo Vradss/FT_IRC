@@ -6,7 +6,7 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 12:02:18 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/18 19:54:43 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/18 21:40:36 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,8 @@ void Server::dispatcher(Client *client, const std::string &command, const std::v
         handlePart(client, params);
     else if (cmd == "QUIT")   
         handleQuit(client, params);
+    else if (cmd == "PING")   
+        handlePing(client, params);
     else
         client->queueMessage(srv + "421 " + nick + " " + command + " :Unknown command\r\n");
 }
