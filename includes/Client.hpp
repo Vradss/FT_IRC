@@ -75,6 +75,8 @@ class Client
         void setUsername(const std::string &username);
         void setRealname(const std::string &realname); //PARA USER 
         void removeChannel(const std::string &name); //quitamos el canal de la lista de canales del usuario 
+        void setQuitReason(const std::string &reason);
+        const std::string &getQuitReason() const; 
 
     private:
         int         _fd;         ///< Socket TCP del cliente. Lo cierra Server, no Client.
@@ -91,6 +93,7 @@ class Client
         bool _markedForDisconnect;  //para si un comando es QUIT y ya el cliente lo marcó como desconectau para que no se ejecute nada más del buffer
         bool _welcomed; 
         std::string _realname; //para USER 
+        std::string _quitReason;
     
 };
 

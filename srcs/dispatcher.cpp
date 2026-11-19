@@ -6,7 +6,7 @@
 /*   By: vrads <vrads@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 12:02:18 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/18 15:26:28 by vrads            ###   ########.fr       */
+/*   Updated: 2026/11/18 20:36:32 by vrads            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,8 @@ void Server::dispatcher(Client *client, const std::string &command, const std::v
         privateMessage(client, params); 
     else if (cmd == "PART")   
         handlePart(client, params);
+    else if (cmd == "QUIT")   
+        handleQuit(client, params);
     else
         client->queueMessage(srv + "421 " + nick + " " + command + " :Unknown command\r\n");
 }

@@ -71,6 +71,9 @@ class Server
 
         void handleKick(Client *client, const std::vector<std::string> &params);
 
+        void cleanupClient(Client *client);
+        void handleQuit(Client *client, const std::vector<std::string> &params);
+
     private:
 
         //Estados, evaluar si necesitamo mas? 

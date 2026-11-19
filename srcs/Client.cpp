@@ -188,3 +188,13 @@ void Client::removeChannel(const std::string &name)
 {
     _clientChannels.erase(name);
 }
+
+void Client::setQuitReason(const std::string &reason)
+{
+    _quitReason = reason;
+}
+
+const std::string &Client::getQuitReason() const
+{
+    return _quitReason;
+}

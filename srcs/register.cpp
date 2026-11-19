@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   register.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: vrads <vrads@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 18:20:51 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/16 20:32:17 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/18 20:46:44 by vrads            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void Server::handleUser(Client *client, const std::vector<std::string> &params)
 
     const std::string srv = ":" + _serverName + " ";
 
+    // USER <MODO> <> :realname
     // USER puede llegar antes que NICK: el nick puede estar vacío -> "*"
     std::string nick = client->getNick();
     if (nick.empty())
