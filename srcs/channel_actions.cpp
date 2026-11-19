@@ -6,7 +6,7 @@
 /*   By: ccarro-d <ccarro-d@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 22:14:39 by ccarro-d          #+#    #+#             */
-/*   Updated: 2026/11/19 17:09:43 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2026/11/19 19:56:59 by ccarro-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,41 +123,37 @@ void Server::handleInvite(Client *client, const std::vector<std::string> &params
 {
 	const std::string srv = ":" + _serverName + " ";
 	const std::string nick = client->getNick();   // ya está registrado (lo filtra el dispatcher)
-	// Sin parámetros o primero vacío
-	if (params.empty() || params[0].empty())
+	// Menos de dos parámetros o alguno vacío... Ignoramos si hay más de 2 parámetros?
+	if (params.empty() || params.size() < 2 || params[0].empty() || params[1].empty())
 	{
 		client->queueMessage(srv + "461 " + nick + " INVITE :Not enough parameters\r\n");
 		return;
 	}
 	// Si no existe el invitado
-	const std::string &invitedNickName = params[0];
-	Client *invitedNick = findByNick(invitedNickName);
+	std::string lowered(params[0]);
+	for (size_t j = 0; j < lowered.size(); ++j)
+		lowered[j] = static_cast<char>(std::tolower(static_cast<unsigned char>(lowered[j])));
+	Client *invitedNick = findByNick(lowered);
 	if (!invitedNick)
 	{
-		client->queueMessage(srv + "401 " + nick + " " + invitedNickName + " :No such nick/channel\r\n");
-		return;
-	}
-	// Parámetros de más o channel vacío
-	if (params.size() != 2 || params[1].empty())
-	{
-		client->queueMessage(srv + "CODE " + nick + " :MESSAGE\r\n");
+		client->queueMessage(srv + "401 " + nick + " " + params[0] + " :No such nick/channel\r\n");
 		return;
 	}
 		const std::string &invitationCh = params[1];
 	// Ver si es un canal y si el usuario pertenece a él
 	Channel *channel;
-	std::string lowered(invitationCh);
+	lowered = invitationCh;
 	for (size_t j = 0; j < lowered.size(); ++j)
 		lowered[j] = static_cast<char>(std::tolower(static_cast<unsigned char>(lowered[j])));
 	// Si no tiene sintaxis de canal, CHAOOOO
-	if (invitationCh[1] != '#')
+	if (invitationCh[0] != '#')
 	{
 		client->queueMessage(srv + "403 " + nick + " " + invitationCh + " :No such channel\r\n");
 		return;
 	}
 	else
 	{
-		channel = findChannel(invitationCh);
+		channel = findChannel(lowered);
 		// Si no es un canal, CHAOOOO
 		if (!channel)
 		{
@@ -168,7 +164,14 @@ void Server::handleInvite(Client *client, const std::vector<std::string> &params
 	// Si el usuario no pertenece al canal, CHAOOOO
 	if (channel->isMember(client) == false)
 	{
-		client->queueMessage(srv + "402 " + nick + " " + channel->getChName() + " :You're not on that channel\r\n"); // No creo que este mensaje sea correcto
+		client->queueMessage(srv + "442 " + nick + " " + channel->getChName() + " :You're not on that channel\r\n"); // No creo que este mensaje sea correcto
+		return;
+	}
+	// Ver si el invitado pertenece ya al canal
+	// Tiene que ir antes de comprobar si el usuario es operador según convención (no protocolo)
+	if (channel->isMember(invitedNick) == true)
+	{
+		client->queueMessage(srv + "443 " + nick + " " + invitedNick->getNick() + " " + channel->getChName() + " :is already on channel\r\n"); // No creo que este mensaje sea correcto
 		return;
 	}
 	// Ver si el usuario es operador del canal
@@ -177,13 +180,8 @@ void Server::handleInvite(Client *client, const std::vector<std::string> &params
 		client->queueMessage(srv + "482 " + nick + " " + channel->getChName() + " :You're not channel operator\r\n"); // No creo que este mensaje sea correcto
 		return;
 	}
-	// Ver si el invitado pertenece ya al canal o ya estaba invitado no hacer nada
-	if (channel->isMember(invitedNick)) // Revisar qué hacer cuando channel->isInvited(invitedNick) == true
-	{
-		client->queueMessage(srv + "442 " + nick + " " + channel->getChName() + " :is already on channel\r\n"); // No creo que este mensaje sea correcto
-		return;
-	}
+	// Esté ya invitado o no, llamamos a adInvite porque set guarda registros únicos
 	channel->addInvite(invitedNick);
-	client->queueMessage(srv + "CODE " + nick + " :MESSAGE\r\n");
-	invitedNick->queueMessage(srv + "CODE " + nick + " :MESSAGE\r\n");
+	client->queueMessage(srv + "341 " + nick + " " + invitedNick->getNick() + " " + invitationCh + "\r\n");
+	invitedNick->queueMessage(":" + client->getPrefix() + " INVITE "+ invitedNick->getNick() + " :" + invitationCh + "\r\n");
 }
