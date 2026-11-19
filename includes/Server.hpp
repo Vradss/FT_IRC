@@ -62,6 +62,8 @@ class Server
         void handleNick(Client *client, const std::vector<std::string> &params);
         void handleUser(Client *client, const std::vector<std::string> &params);
         void completeRegistration(Client *client);
+		/*CÉSAR		COMMAND: TOPIC*/ void handleTopic(Client *client, const std::vector<std::string>& params);
+		/*CÉSAR		COMMAND: TOPIC*/ void handleInvite(Client *client, const std::vector<std::string> &params);
 
         void privateMessage(Client *client, const std::vector<std::string> &params);
         Channel *findChannel(const std::string &name);

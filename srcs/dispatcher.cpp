@@ -6,10 +6,11 @@
 /*   By: vrads <vrads@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 12:02:18 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/19 18:24:25 by vrads            ###   ########.fr       */
+/*   Updated: 2026/11/19 18:26:18 by vrads            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/Server.hpp"
 #include "../includes/Client.hpp"
 
 /*
@@ -121,8 +122,10 @@ void Server::dispatcher(Client *client, const std::string &command, const std::v
         handleNick(client, params); 
     else if (cmd == "USER")   
         handleUser(client, params);
-    // else if (cmd == "INVITE") handleInvite(client, params); *
-    // else if (cmd == "TOPIC")  handleTopic(client, params); *
+    else if (cmd == "INVITE") 
+        handleInvite(client, params);
+    else if (cmd == "TOPIC")  
+        handleTopic(client, params);
     // else if (cmd == "MODE")   handleMode(client, params);
     else if (cmd == "KICK")   
         handleKick(client, params); 

@@ -34,7 +34,8 @@ SRCS     = main.cpp \
 		   quit.cpp \
 		   ping.cpp \
 		   pong.cpp \
-		   cap.cpp
+		   cap.cpp \
+		   channel_actions.cpp
 
 
 OBJ_DIR = obj

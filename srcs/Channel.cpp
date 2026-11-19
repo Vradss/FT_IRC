@@ -13,12 +13,12 @@
 #include "Channel.hpp"
 
 Channel::Channel() : _chName(""), _chTopic(""), _chUsers(), _chOperators(), _chKey(""), _hasChKey(false),
-      _chInviteOnly(false), _chUserLimit(0) {}
+      _chInviteOnly(false), _chUserLimit(0), _topicRestricted(false) {}
 
 
 Channel::Channel(const std::string &name) :
 _chName(name), _chTopic(""), _chUsers(), _chKey(""), _hasChKey(false),
-      _chInviteOnly(false), _chUserLimit(0)
+      _chInviteOnly(false), _chUserLimit(0), _topicRestricted(false)
 {
 }
 
@@ -31,7 +31,9 @@ Channel::Channel(const Channel &other)
       _chKey(other._chKey),
       _hasChKey(other._hasChKey),
       _chInviteOnly(other._chInviteOnly),
-      _chUserLimit(other._chUserLimit){}
+      _chUserLimit(other._chUserLimit),
+      _chJoinOrder(other._chJoinOrder),
+      _topicRestricted(other._topicRestricted){}
 
 Channel &Channel::operator=(const Channel &other)
 {
@@ -46,6 +48,8 @@ Channel &Channel::operator=(const Channel &other)
         _chInvited = other._chInvited;
         _chInviteOnly = other._chInviteOnly;
         _chUserLimit = other._chUserLimit;
+        _chJoinOrder = other._chJoinOrder;
+        _topicRestricted = other._topicRestricted;
     }
     return *this;
 }

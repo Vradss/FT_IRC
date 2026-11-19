@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: vrads <vrads@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 19:27:38 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/18 23:29:23 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/19 18:27:29 by vrads            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ class Channel
         bool _chInviteOnly; 
         size_t _chUserLimit;
         std::vector<Client *> _chJoinOrder;   // miembros en orden de entrada 
+        bool _topicRestricted; // MODE +t (CÉSAR)
         
 
     public:
@@ -88,7 +89,9 @@ class Channel
         bool isEmpty() const;
         bool hasOperators() const;
         Client *getOldestMember() const;
-        
+        void addInvite(Client *client);
+        bool isTopicRestricted() const;
+
 
 };
 
