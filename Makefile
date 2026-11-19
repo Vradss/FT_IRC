@@ -24,17 +24,17 @@ SRCS     = main.cpp \
            Client.cpp \
 		   Channel.cpp \
 		   Parser.cpp \
-		   join_utils.cpp \
 		   dispatcher.cpp \
-		   join.cpp \
-		   register.cpp \
-		   privmsg.cpp \
-		   part.cpp \
-		   kick.cpp \
-		   quit.cpp \
-		   ping.cpp \
-		   pong.cpp \
-		   cap.cpp \
+		   Commands/join.cpp \
+		   Commands/join_utils.cpp \
+		   Commands/register.cpp \
+		   Commands/privmsg.cpp \
+		   Commands/part.cpp \
+		   Commands/kick.cpp \
+		   Commands/quit.cpp \
+		   Commands/ping.cpp \
+		   Commands/pong.cpp \
+		   Commands/cap.cpp \
 		   channel_actions.cpp
 
 

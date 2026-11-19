@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: vflorez <vflorez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 21:59:48 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/16 23:44:17 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/19 21:54:35 by vflorez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#include "../includes/Server.hpp"
+#include "../../includes/Server.hpp"
 #include <cctype>
 #include <new>
 

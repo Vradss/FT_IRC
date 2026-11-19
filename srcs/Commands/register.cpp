@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   register.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vrads <vrads@student.42.fr>                +#+  +:+       +#+        */
+/*   By: vflorez <vflorez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 18:20:51 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/18 20:46:44 by vrads            ###   ########.fr       */
+/*   Updated: 2026/11/19 21:32:15 by vflorez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
     En este clase voy a tener los handle de pass, nick y user 
 */
 
-#include "../includes/Server.hpp"
-#include "../includes/Channel.hpp"
+#include "../../includes/Server.hpp"
+#include "../../includes/Channel.hpp"
 
 // máximo de caracteres del username. Si es más largo los truncamos TO-DO HACER ESTO (irssi usa
 // por defecto el nombre de usuario del sistema, que puede ser largo)

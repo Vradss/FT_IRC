@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: vflorez <vflorez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 22:06:28 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/16 23:57:57 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/19 21:32:05 by vflorez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Server.hpp"
-#include "../includes/Channel.hpp"
+#include "../../includes/Server.hpp"
+#include "../../includes/Channel.hpp"
 
 
 static const size_t PRIVMSG_MAX_TEXT = 370; // TO-DO checkear movidas

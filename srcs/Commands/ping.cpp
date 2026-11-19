@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ping.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: vflorez <vflorez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 21:34:12 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/18 22:35:34 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/19 21:32:00 by vflorez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#include "../includes/Server.hpp"
+#include "../../includes/Server.hpp"
 
 static const size_t PING_MAX_TEXT = 400;
 

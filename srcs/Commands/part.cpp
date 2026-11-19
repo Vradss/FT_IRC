@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: vflorez <vflorez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 19:53:20 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/18 23:43:09 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/19 21:31:56 by vflorez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Server.hpp"
-#include "../includes/Client.hpp"
-#include "../includes/Channel.hpp"
+#include "../../includes/Server.hpp"
+#include "../../includes/Client.hpp"
+#include "../../includes/Channel.hpp"
 #include <cctype>
 
 static const size_t PART_MAX_REASON = 300;

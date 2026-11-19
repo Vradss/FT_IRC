@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dispatcher_utils.cpp                               :+:      :+:    :+:   */
+/*   join_utils.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: vflorez <vflorez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/14 11:47:50 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/15 13:31:22 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/19 21:53:32 by vflorez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
     estos métodos creo que estarán todos en la clase server.hpp
 */
 
-#include "Server.hpp"
+#include "../../includes/Server.hpp"
 #include <vector>
 #include <string>
 

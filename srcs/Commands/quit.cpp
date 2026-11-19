@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: vflorez <vflorez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 22:31:32 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/17 23:06:40 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/19 21:32:09 by vflorez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Server.hpp"
+#include "../../includes/Server.hpp"
 
 
 static const size_t QUIT_MAX_REASON = 300;
