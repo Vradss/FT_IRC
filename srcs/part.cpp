@@ -6,12 +6,13 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 19:53:20 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/17 22:09:57 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/18 23:43:09 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
 #include "../includes/Client.hpp"
+#include "../includes/Channel.hpp"
 #include <cctype>
 
 static const size_t PART_MAX_REASON = 300;
@@ -47,18 +48,44 @@ static std::string toLower(const std::string &s)
 
 void Server::leaveChannel(Client *client, Channel *channel)
 {
-    //buscamos el canal 
     const std::string chKey = toLower(channel->getChName());
+
+    // Hay que saberlo ANTES de quitarle: después ya no es operador
+    const bool wasOperator = channel->isOperator(client);
 
     channel->removeUser(client);
     channel->removeOperator(client);
     channel->removeInvite(client);
     client->removeChannel(chKey);
 
+    // Canal vacío: se borra, y no hay a quién ascender
     if (channel->isEmpty())
     {
-        _channels.erase(chKey); // primero la quitamos del mapa 
-        delete channel; // y luego se libera la memoria, no usar mas
+        _channels.erase(chKey);     // primero se saca del mapa
+        delete channel;             //y luego se libera. No volver a usarlo.
+        return;
+    }
+
+    // Se fue el ÚLTIMO operador y quedan miembros => asciende al más antiguo
+    if (wasOperator && !channel->hasOperators())
+    {
+        Client *next = channel->getOldestMember();
+        if (next && channel->addOperator(next))
+        {
+            // Hay que AVISAR a todos, o sus clientes seguirían viendo
+            // al nuevo operador sin '@' (estaria desincronizado).
+            const std::string msg = ":" + _serverName + " MODE " + channel->getChName()
+                + " +o " + next->getNick() + "\r\n";
+
+            const std::map<int, Client *> &users = channel->getChUsers();
+            for (std::map<int, Client *>::const_iterator uit = users.begin();
+                 uit != users.end(); ++uit)
+            {
+                if (uit->second->shouldClose())
+                    continue;
+                uit->second->queueMessage(msg);
+            }
+        }
     }
 }
 

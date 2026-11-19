@@ -6,7 +6,7 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 19:27:38 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/17 20:27:47 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/18 23:29:23 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <string>
 #include <map>
 #include <set>  
+#include <vector>
 #include "Client.hpp"
 
 
@@ -47,6 +48,7 @@ class Channel
         bool _hasChKey; //esto igual por si me mandan una clave y el canan no tiene clave? 
         bool _chInviteOnly; 
         size_t _chUserLimit;
+        std::vector<Client *> _chJoinOrder;   // miembros en orden de entrada 
         
 
     public:
@@ -84,6 +86,9 @@ class Channel
         void removeUser(Client *client);
         void removeOperator(Client *client);
         bool isEmpty() const;
+        bool hasOperators() const;
+        Client *getOldestMember() const;
+        
 
 };
 

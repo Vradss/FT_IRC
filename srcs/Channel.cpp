@@ -6,7 +6,7 @@
 /*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 20:25:49 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/17 20:27:31 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/18 23:32:13 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,12 +105,21 @@ void Channel::setHasChKey(bool hasChKey)
 
 bool Channel::addUser(Client *client)
 {
+    /*
     if (!client)
         return false;
     // insert() no sobrescribe si la clave (el fd) ya existe
     // .second dice si se insertó, buscamos el value para luego devolverlo y ver si se ha insertado o no 
     // https://stackoverflow.com/questions/60766336/map-c-using-itr-first-second-vs-itr-second
-    return _chUsers.insert(std::make_pair(client->getFd(), client)).second;
+    return _chUsers.insert(std::make_pair(client->getFd(), client)).second;*/
+    if (!client)
+        return false;
+    // insert() no sobrescribe si la clave ya existe; .second dice si se insertó
+    bool inserted = _chUsers.insert(std::make_pair(client->getFd(), client)).second;
+    if (inserted)
+        _chJoinOrder.push_back(client);     // al final = el más reciente
+    return inserted;
+
 }
 
 //para saber si el cliente es operador del canal 
@@ -183,9 +192,23 @@ size_t Channel::getUserLimit() const
 
 void Channel::removeUser(Client *client)
 {
+    /*
+    if (!client)
+        return;
+    _chUsers.erase(client->getFd());*/
     if (!client)
         return;
     _chUsers.erase(client->getFd());
+
+    for (std::vector<Client *>::iterator it = _chJoinOrder.begin();
+         it != _chJoinOrder.end(); ++it)
+    {
+        if (*it == client)
+        {
+            _chJoinOrder.erase(it);
+            break;
+        }
+    }
 }
 
 // Quita al cliente de la lista de operadores
@@ -202,3 +225,19 @@ bool Channel::isEmpty() const
     return _chUsers.empty();
 }
 
+
+bool Channel::hasOperators() const
+{
+    return !_chOperators.empty();
+}
+
+
+
+// para promocionar el miembro mas antiguo a operador
+Client *Channel::getOldestMember() const
+{
+    for (size_t i = 0; i < _chJoinOrder.size(); ++i)
+        if (!_chJoinOrder[i]->shouldClose())
+            return _chJoinOrder[i];
+    return NULL;
+}
