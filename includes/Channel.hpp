@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: ccarro-d <ccarro-d@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 19:27:38 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/15 20:11:34 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/19 02:42:56 by ccarro-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ class Channel
         bool _hasChKey; //esto igual por si me mandan una clave y el canan no tiene clave? 
         bool _chInviteOnly; 
         size_t _chUserLimit;
+		/*CÉSAR*/bool _topicRestricted;
         
 
     public:
@@ -80,6 +81,8 @@ class Channel
         size_t getUserLimit() const;
         bool isInvited(Client *client) const;
         void removeInvite(Client *client);
+        void addInvite(Client *client);
+		/*CËSAR*/ bool isTopicRestricted() const;
 
 
 };

@@ -6,7 +6,7 @@
 /*   By: ccarro-d <ccarro-d@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 12:02:18 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/18 18:15:50 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2026/11/19 00:34:26 by ccarro-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,10 +117,10 @@ void Server::dispatcher(Client *client, const std::string &command, const std::v
         handlePass(client, params);
     else if (cmd == "NICK")   handleNick(client, params); 
     else if (cmd == "USER")   handleUser(client, params);
-    // else if (cmd == "INVITE") handleInvite(client, params); *
+    else if (cmd == "INVITE") handleInvite(client, params);
     else if (cmd == "TOPIC")  handleTopic(client, params);
     // else if (cmd == "MODE")   handleMode(client, params);
-    // else if (cmd == "KICK")   handleKick(client, params); *
+    // else if (cmd == "KICK")   handleKick(client, params);
     else if (cmd == "PRIVMSG")   privateMessage(client, params); 
     else
         client->queueMessage(srv + "421 " + nick + " " + command + " :Unknown command\r\n");
