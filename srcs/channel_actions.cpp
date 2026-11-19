@@ -6,7 +6,7 @@
 /*   By: ccarro-d <ccarro-d@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 22:14:39 by ccarro-d          #+#    #+#             */
-/*   Updated: 2026/11/19 19:56:59 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2026/11/19 20:22:04 by ccarro-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,23 @@
 
 // Mover a Channel.cpp
 /**
- * @brief 
- * 
- * @return true 
- * @return false 
+ * @brief Indica si solo los operadores pueden modificar el topic del canal.
+ * @return true si el modo de topic restringido está activo; false en caso
+ * contrario.
  */
 bool Channel::isTopicRestricted() const {return (_topicRestricted);}
 
 /**
- * @brief 
+ * @brief Procesa la consulta o modificación del topic de un canal.
  * 
- * @param client 
- * @param params 
+ * Con un único parámetro devuelve el topic actual. Con un segundo parámetro
+ * intenta sustituirlo y, si procede, comunica el cambio a todos los miembros
+ * conectados del canal.
+ *
+ * @param[in] client Cliente registrado que ejecutó el comando TOPIC.
+ * @param[in] params Parámetros analizados: nombre del canal y, opcionalmente,
+ * nuevo topic.
  */
-
 void Server::handleTopic(Client *client, const std::vector<std::string> &params)
 {
 	const std::string srv = ":" + _serverName + " ";
@@ -108,9 +111,9 @@ void Server::handleTopic(Client *client, const std::vector<std::string> &params)
 
 // Mover a Channel.cpp
 /**
- * @brief 
- * 
- * @param client 
+ * @brief Registra a un cliente como invitado al canal.
+ * @param[in] client Cliente que podrá acceder al canal; los punteros nulos se
+ * ignoran y las invitaciones duplicadas no alteran el conjunto.
  */
 void Channel::addInvite(Client *client)
 {
@@ -119,6 +122,17 @@ void Channel::addInvite(Client *client)
     _chInvited.insert(client);
 }
 
+/**
+ * @brief Procesa una invitación de un cliente a un canal.
+ *
+ * Comprueba que el nick y el canal existan, que quien invita pertenezca al
+ * canal, que el destinatario aún no sea miembro y, para canales de acceso
+ * restringido, que quien invita sea operador. Si tiene éxito, registra la
+ * invitación y notifica a ambos clientes.
+ *
+ * @param[in] client Cliente registrado que ejecutó el comando INVITE.
+ * @param[in] params Parámetros analizados: nick del invitado y nombre del canal.
+ */
 void Server::handleInvite(Client *client, const std::vector<std::string> &params)
 {
 	const std::string srv = ":" + _serverName + " ";
@@ -180,7 +194,7 @@ void Server::handleInvite(Client *client, const std::vector<std::string> &params
 		client->queueMessage(srv + "482 " + nick + " " + channel->getChName() + " :You're not channel operator\r\n"); // No creo que este mensaje sea correcto
 		return;
 	}
-	// Esté ya invitado o no, llamamos a adInvite porque set guarda registros únicos
+	// Esté ya invitado o no, llamamos a addInvite porque set guarda registros únicos
 	channel->addInvite(invitedNick);
 	client->queueMessage(srv + "341 " + nick + " " + invitedNick->getNick() + " " + invitationCh + "\r\n");
 	invitedNick->queueMessage(":" + client->getPrefix() + " INVITE "+ invitedNick->getNick() + " :" + invitationCh + "\r\n");
