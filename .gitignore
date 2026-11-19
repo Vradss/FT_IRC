@@ -3,3 +3,5 @@ ircserv
 *.o
 *.d
 .DS_Store
+graphify-out/
+.graphifyignore
