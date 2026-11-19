@@ -1,8 +1,3 @@
-
-//falta quien es el usuario (personaje B)
-//Falta la clase channel que guarda al cliente (perosnaje C)
-
-
 #include "Client.hpp"
 
 /**
@@ -30,7 +25,7 @@
  */
 Client::Client(int fd)
     : _fd(fd), _toClose(false),
-      _authenticated(false), _markedForDisconnect(false), _welcomed(false)   // [INTEGRACION]
+      _authenticated(false), _markedForDisconnect(false), _welcomed(false)  // [INTEGRACION]
 {}
 
 int Client::getFd() const { return _fd; }
@@ -154,12 +149,6 @@ void Client::setWelcomed(bool value)
     _welcomed = value;
 }
 
-/*
-void Client::setNick(const std::string &nick)
-{
-    _nick = nick;               // se guarda TAL CUAL lo escribió el usuario
-}
-*/
 
 // Solo lectura: lo usa handleNick para saber a quién avisar de que alguien se ha modificado el nick
 // _clientChannels es std::map<std::string, Channel*> 
@@ -197,4 +186,9 @@ void Client::setQuitReason(const std::string &reason)
 const std::string &Client::getQuitReason() const
 {
     return _quitReason;
+}
+
+void Client::setHostname(const std::string &hostname)
+{
+    _hostname = hostname;
 }

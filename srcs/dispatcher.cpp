@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dispatcher.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vrads <vrads@student.42.fr>                +#+  +:+       +#+        */
+/*   By: vflorez <vflorez@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 12:02:18 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/19 18:26:18 by vrads            ###   ########.fr       */
+/*   Updated: 2026/11/19 22:07:01 by vflorez          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,7 @@
  *     nunca dentro de un handler.
  */
 
-// esto borrar porque igual lo hizo césar
-//comentado para no eliminarlo 
-// static std::string toUpperStr(const std::string &s)
-// {
-//     std::string result(s);
-//     for (size_t i = 0; i < result.size(); ++i)
-//         result[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(result[i])));
-//     return result;
-// }
 
-
-// Comandos que se admiten ANTES de estar registrado. TO-DO: ver que son todos correctos
 static bool isPreRegistrationCommand(const std::string &cmd)
 {
     return cmd == "PASS" || cmd == "NICK" || cmd == "USER"

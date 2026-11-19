@@ -11,8 +11,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
-#include <string>
-#include <vector>
+
 
 /**
  * @file Server.cpp
@@ -252,6 +251,9 @@ void Server::acceptClient()
     p.events = POLLIN;
     p.revents = 0;
     _fds.push_back(p);
+    Client client(fd);
+    client.setHostname(inet_ntoa(addr.sin_addr));
+
     _clients.insert(std::make_pair(fd, Client(fd)));
     std::cout << "[fd " << fd << "] connected from "
               << inet_ntoa(addr.sin_addr) << std::endl;
@@ -341,31 +343,13 @@ void Server::handleLine(Client &client, const std::string &line)
     //DEBUG
     std::cout << "[fd " << client.getFd() << "] line: \"" << line << "\"" << std::endl;
 
-    
 	Instruction instruction ;
 	std::string err_msg;
-	//bool parsing = Parser::parse(line, instruction , err_msg);
-	
-	//DEBUGGING
-	/*
-	*if (parsing == true)
-	*	print_instruction (instruction );
-	*else
-	*	std::cout << "Error: " << err_msg << std::endl;
-	*/
 
-	// if (parsing == true)
-    // 	dispatcher(&client, instruction.command, instruction.parameters); // Reemplazar los dos últimos parámetros por el struct en lugar de sus miembros por separado
-	// //else
-		// Printear error? Salir?
-
-    // línea mal formada: se ignora (el servidor nunca se cae ni desconecta)
-    //RFC no define un error para eso. Los comandos bien formados pero desconocidos los
-    // responde el dispatcher con 421.
     if (!Parser::parse(line, instruction, err_msg))
         return;
 
-    // ver cómo queda troceada la línea
+    // ver cómo queda troceada la línea DEBUG
     std::cout << "    command: [" << instruction.command << "]" << std::endl;
     for (size_t i = 0; i < instruction.parameters.size(); ++i)
         std::cout << "    param[" << i << "]: [" << instruction.parameters[i] << "]" << std::endl;

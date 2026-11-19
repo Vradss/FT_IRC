@@ -61,6 +61,7 @@ ${NAME}: ${OBJS}
 
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+	@$(MKDIR) $(dir $@)
 	@echo "${CYAN} Compiling $<...${RESET}"
 	@${CXX} ${CXXFLAGS} $(CPPFLAGS) -c $< -o $@
 

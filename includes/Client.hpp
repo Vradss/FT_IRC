@@ -67,13 +67,13 @@ class Client
         void markForDisconnect(); //esto para marcarlo como desconectado
         bool isAuthenticated() const;
         void setAuthenticated(bool value);
-        //void setNick(const std::string &nick); ya está
         void setWelcomed(bool value);
         bool hasWelcomed() const;
         const std::map<std::string, Channel *> &getChannels() const; // lo uso en handleNick para saber a quien aviso 
         const std::string &getUsername() const;
         void setUsername(const std::string &username);
         void setRealname(const std::string &realname); //PARA USER 
+        void setHostname(const std::string &hostname);
         void removeChannel(const std::string &name); //quitamos el canal de la lista de canales del usuario 
         void setQuitReason(const std::string &reason);
         const std::string &getQuitReason() const; 
