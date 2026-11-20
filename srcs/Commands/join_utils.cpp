@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join_utils.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vflorez <vflorez@student.42.fr>            +#+  +:+       +#+        */
+/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/14 11:47:50 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/19 21:53:32 by vflorez          ###   ########.fr       */
+/*   Updated: 2026/11/20 15:04:18 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,27 @@ void Server::handleJoin(Client *client, const std::vector<std::string> &params)
     // y voy borrando, los iteradores son inválidos y peta 
     // asi aunque la lista original cambie cada vez que quito un canal, no peta **
     if (params[0] == "0")
-        return; //TO-DO: PONER AQUI LA FUNCION DE LIMPIAR DEL PART 
+    {
+        // Se junta primero la lista de canales en un string. Así no se recorre
+        // client->getChannels() mientras handlePart la modifica.
+        std::string list;
+        const std::map<std::string, Channel *> &mine = client->getChannels();
+        for (std::map<std::string, Channel *>::const_iterator it = mine.begin();
+             it != mine.end(); ++it)
+        {
+            if (!list.empty())
+                list += ",";
+            list += it->second->getChName();    // nombre guardado en el canal
+        }
+
+        if (list.empty())       // no está en ningún canal
+            return;
+
+        std::vector<std::string> partParams;
+        partParams.push_back(list);
+        handlePart(client, partParams);
+        return;
+    }
 
     // spliteamos canales y keys y los asociamos con su key correspondiente 
     const std::vector<std::string> channels = splitByComma(params[0]);

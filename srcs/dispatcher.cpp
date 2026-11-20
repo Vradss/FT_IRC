@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dispatcher.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vflorez <vflorez@student.42.fr>            +#+  +:+       +#+        */
+/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 12:02:18 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/19 22:07:01 by vflorez          ###   ########.fr       */
+/*   Updated: 2026/11/20 16:16:19 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,58 @@
  *     nunca dentro de un handler.
  */
 
+enum CommandId
+{
+    CMD_UNKNOWN,
+    CMD_JOIN,
+    CMD_PASS,
+    CMD_NICK,
+    CMD_USER,
+    CMD_INVITE,
+    CMD_TOPIC,
+    CMD_KICK,
+    CMD_PRIVMSG,
+    CMD_PART,
+    CMD_QUIT,
+    CMD_PING,
+    CMD_PONG,
+    CMD_CAP
+};
+
+struct CommandEntry
+{
+    const char *name;
+    CommandId   id;
+};
+
+
+static const CommandEntry g_commands[] =
+{
+    { "JOIN",    CMD_JOIN },
+    { "PASS",    CMD_PASS },
+    { "NICK",    CMD_NICK },
+    { "USER",    CMD_USER },
+    { "INVITE",  CMD_INVITE },
+    { "TOPIC",   CMD_TOPIC },
+    { "KICK",    CMD_KICK },
+    { "PRIVMSG", CMD_PRIVMSG },
+    { "PART",    CMD_PART },
+    { "QUIT",    CMD_QUIT },
+    { "PING",    CMD_PING },
+    { "PONG",    CMD_PONG },
+    { "CAP",     CMD_CAP }
+};
+
+static CommandId findCommand(const std::string &cmd)
+{
+    const size_t count = sizeof(g_commands) / sizeof(g_commands[0]);
+    for (size_t i = 0; i < count; ++i)
+    {
+        if (cmd == g_commands[i].name)
+            return g_commands[i].id;
+    }
+    return CMD_UNKNOWN;
+}
 
 static bool isPreRegistrationCommand(const std::string &cmd)
 {
@@ -103,33 +155,51 @@ void Server::dispatcher(Client *client, const std::string &command, const std::v
     //toda esta parte no sé si la meteré mejor en un switch que se vea más mono 
     // TO-DO: VER SI SE ME HA OLVIDADO ALGUN COMANDO
     // TO-DO: PRIVMESSAGE Y PART
-    if (cmd == "JOIN")
-        handleJoin(client, params); 
-    else if (cmd == "PASS")   
-        handlePass(client, params);
-    else if (cmd == "NICK")   
-        handleNick(client, params); 
-    else if (cmd == "USER")   
-        handleUser(client, params);
-    else if (cmd == "INVITE") 
-        handleInvite(client, params);
-    else if (cmd == "TOPIC")  
-        handleTopic(client, params);
-    // else if (cmd == "MODE")   handleMode(client, params);
-    else if (cmd == "KICK")   
-        handleKick(client, params); 
-    else if (cmd == "PRIVMSG")   
-        privateMessage(client, params); 
-    else if (cmd == "PART")   
-        handlePart(client, params);
-    else if (cmd == "QUIT")   
-        handleQuit(client, params);
-    else if (cmd == "PING")   
-        handlePing(client, params);
-    else if (cmd == "PONG")   
-        handlePong(client, params);
-    else if (cmd == "CAP")   
-        handleCap(client, params);
-    else
-        client->queueMessage(srv + "421 " + nick + " " + command + " :Unknown command\r\n");
+    switch (findCommand(cmd))
+    {
+        case CMD_JOIN:
+            handleJoin(client, params);
+            break;
+        case CMD_PASS:
+            handlePass(client, params);
+            break;
+        case CMD_NICK:
+            handleNick(client, params);
+            break;
+        case CMD_USER:
+            handleUser(client, params);
+            break;
+        case CMD_INVITE:
+            handleInvite(client, params);
+            break;
+        case CMD_TOPIC:
+            handleTopic(client, params);
+            break;
+        case CMD_KICK:
+            handleKick(client, params);
+            break;
+        case CMD_PRIVMSG:
+            privateMessage(client, params);
+            break;
+        case CMD_PART:
+            handlePart(client, params);
+            break;
+        case CMD_QUIT:
+            handleQuit(client, params);
+            break;
+        case CMD_PING:
+            handlePing(client, params);
+            break;
+        case CMD_PONG:
+            handlePong(client, params);
+            break;
+        case CMD_CAP:
+            handleCap(client, params);
+            break;
+        case CMD_UNKNOWN:
+        default:
+            client->queueMessage(srv + "421 " + nick + " " + command + " :Unknown command\r\n");
+            break;
+}
+
 }
