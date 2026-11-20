@@ -6,7 +6,7 @@
 /*   By: ccarro-d <ccarro-d@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 19:27:38 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/19 02:42:56 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2026/11/19 21:23:41 by ccarro-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ class Channel
         bool isInvited(Client *client) const;
         void removeInvite(Client *client);
         void addInvite(Client *client);
-		/*CËSAR*/ bool isTopicRestricted() const;
+		/*CÉSAR*/ bool isTopicRestricted() const;
 
 
 };

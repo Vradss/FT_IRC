@@ -6,7 +6,7 @@
 /*   By: ccarro-d <ccarro-d@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/16 22:14:39 by ccarro-d          #+#    #+#             */
-/*   Updated: 2026/11/19 20:22:04 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2026/11/19 21:22:19 by ccarro-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void Server::handleTopic(Client *client, const std::vector<std::string> &params)
 	for (size_t j = 0; j < lowered.size(); ++j)
 		lowered[j] = static_cast<char>(std::tolower(static_cast<unsigned char>(lowered[j])));
 	// Si no tiene sintaxis de canal, CHAOOOO
-	if (consultedCh[0] != '#')
+	if (consultedCh[0] != '#' && consultedCh[0] != '&')
 	{
 		client->queueMessage(srv + "403 " + nick + " " + consultedCh + " :No such channel\r\n");
 		return;
@@ -160,7 +160,7 @@ void Server::handleInvite(Client *client, const std::vector<std::string> &params
 	for (size_t j = 0; j < lowered.size(); ++j)
 		lowered[j] = static_cast<char>(std::tolower(static_cast<unsigned char>(lowered[j])));
 	// Si no tiene sintaxis de canal, CHAOOOO
-	if (invitationCh[0] != '#')
+	if (invitationCh[0] != '#' && invitationCh[0] != '&')
 	{
 		client->queueMessage(srv + "403 " + nick + " " + invitationCh + " :No such channel\r\n");
 		return;
@@ -199,3 +199,4 @@ void Server::handleInvite(Client *client, const std::vector<std::string> &params
 	client->queueMessage(srv + "341 " + nick + " " + invitedNick->getNick() + " " + invitationCh + "\r\n");
 	invitedNick->queueMessage(":" + client->getPrefix() + " INVITE "+ invitedNick->getNick() + " :" + invitationCh + "\r\n");
 }
+
