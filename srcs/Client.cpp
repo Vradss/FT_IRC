@@ -24,8 +24,8 @@
  *   - _authenticated = true -> se podia registrar sin PASS
  */
 Client::Client(int fd)
-    : _fd(fd), _toClose(false),
-      _authenticated(false), _markedForDisconnect(false), _welcomed(false)  // [INTEGRACION]
+    : _fd(fd), _toClose(false), _markedForDisconnect(false),
+      _authenticated(false), _welcomed(false)  // [INTEGRACION]
 {}
 
 int Client::getFd() const { return _fd; }

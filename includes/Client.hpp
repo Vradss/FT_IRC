@@ -4,97 +4,97 @@
 #include <string>
 #include <cstddef>
 #include <map>
+
 class Channel;
 
 /**
  * @file Client.hpp
- * @brief Una conexion TCP aceptada y sus buffers.
+ * @brief One accepted TCP connection: its buffers and its user data.
  */
 
 /**
  * @class Client
- * @brief Un cliente conectado. NO hace I/O: solo guarda datos.
+ * @brief A connected client. It does NO I/O: it only stores data.
  *
- * Quien hace recv/send es Server; Client solo guarda lo que llega y lo que
- * hay que enviar. Asi toda la red queda en un unico sitio (Server::run).
+ * Server does recv/send; Client only keeps what arrived and what has to be
+ * sent. That way all the network code lives in one place (Server::run).
  *
- * Reparto:
- * - Persona A: fd, buffers y cierre diferido.
- * - Persona B: datos del usuario (nick, user, registro). Añadir aqui sin
- *   tocar los campos de A.
- *
- * Por que public / private:
- * - Los atributos son **private**: nadie puede escribir en _outBuffer sin
- *   pasar por queueOutput(). Si mañana cambiamos como se guarda la salida,
- *   solo cambia esta clase.
- * - Las funciones son **public** porque Server (y B) las necesitan.
- *
- * A diferencia de Server, Client SI se puede copiar: std::map lo copia al
- * hacer insert(). Es seguro porque Client no cierra su fd (lo hace Server).
+ * Unlike Server, Client CAN be copied: std::map copies it on insert().
+ * That is safe because Client never closes its fd (Server does).
  */
 class Client
 {
     public:
-        /**
-         * @brief Crea el cliente para un fd ya aceptado y en O_NONBLOCK.
-         * @param fd Socket devuelto por accept().
-         *
-         * explicit: evita que un int se convierta solo en Client por error.
-         */
+
         explicit Client(int fd);
+
+        /* =================== Socket and buffers ================ */
         int                 getFd() const;
-
-        //Aquí tienen que completar lo de los usuarios, NICK USER PASS, etc GAAA
-        const std::string   &getNick() const;
-        void                setNick(const std::string &nick);
-
         void                appendInput(const char *data, size_t len);
         bool                extractLine(std::string &line);
         size_t              inputSize() const;
         void                queueOutput(const std::string &data);
+        void                queueMessage(const std::string &msg);
         bool                hasOutput() const;
         const std::string   &getOutput() const;
         void                consumeOutput(size_t n);
+
+        /* ============================ Deferred close ============================ */
         void                markToClose();
         bool                shouldClose() const;
+        bool                isMarkedForDisconnect() const;
+        void                markForDisconnect();
 
-        //AURORA:
-        void addChannel(const std::string &name, Channel *channel);
-        std::string getPrefix() const; 
-        void queueMessage(const std::string &msg); 
-        bool isRegistered() const;
-        bool isMarkedForDisconnect() const; // esto para ver el estado   
-        void markForDisconnect(); //esto para marcarlo como desconectado
-        bool isAuthenticated() const;
-        void setAuthenticated(bool value);
-        void setWelcomed(bool value);
-        bool hasWelcomed() const;
-        const std::map<std::string, Channel *> &getChannels() const; // lo uso en handleNick para saber a quien aviso 
-        const std::string &getUsername() const;
-        void setUsername(const std::string &username);
-        void setRealname(const std::string &realname); //PARA USER 
-        void setHostname(const std::string &hostname);
-        void removeChannel(const std::string &name); //quitamos el canal de la lista de canales del usuario 
-        void setQuitReason(const std::string &reason);
-        const std::string &getQuitReason() const; 
+        /* =================== Identity: nick, user, realname, host =============== */
+        const std::string   &getNick() const;
+        void                setNick(const std::string &nick);
+        const std::string   &getUsername() const;
+        void                setUsername(const std::string &username);
+        void                setRealname(const std::string &realname);
+        void                setHostname(const std::string &hostname);
+        std::string         getPrefix() const;
+
+        /* ========================== Registration state ========================== */
+        bool                isAuthenticated() const;
+        void                setAuthenticated(bool value);
+        /** @brief true when authenticated (PASS) and NICK and USER are set. */
+        bool                isRegistered() const;
+        bool                hasWelcomed() const;
+        void                setWelcomed(bool value);
+
+        /* =============================== Channels =============================== */
+        void                addChannel(const std::string &name, Channel *channel);
+        void                removeChannel(const std::string &name);
+        const std::map<std::string, Channel *> &getChannels() const;
+
+        /* ================================= QUIT ================================= */
+        void                setQuitReason(const std::string &reason);
+        const std::string   &getQuitReason() const;
 
     private:
-        int         _fd;         ///< Socket TCP del cliente. Lo cierra Server, no Client.
-        std::string _nick;       ///< (B) Nick actual; "" hasta que haga NICK. MODIFICAR OJITO
-        std::string _inBuffer;   ///< Bytes recibidos sin '\n' todavia del cliente
-        std::string _outBuffer;  ///< Bytes pendientes de send().
-        bool        _toClose;    ///< true = cerrar en removeClosedClients().
+        /* =========================== Socket and buffers ========================= */
+        int             _fd; 
+        std::string     _inBuffer; 
+        std::string     _outBuffer;    
 
-        //aurora 
-        std::map<std::string, Channel*> _clientChannels; //la lista de canales a la que pertenece el cliente
-        std::string _username; 
-        std::string _hostname; 
-        bool _authenticated; // esto ponerlo a true cuando el user se autentique con la PASS del server si no puede pasar por logado y no 
-        bool _markedForDisconnect;  //para si un comando es QUIT y ya el cliente lo marcó como desconectau para que no se ejecute nada más del buffer
-        bool _welcomed; 
-        std::string _realname; //para USER 
-        std::string _quitReason;
-    
+        /* ============================ Deferred close ============================ */
+        bool            _toClose;           
+        bool            _markedForDisconnect; 
+
+        /* =============================== Identity =============================== */
+        std::string     _nick;         
+        std::string     _username;
+        std::string     _realname;  
+        std::string     _hostname;   
+
+        /* ========================== Registration state ========================== */
+        bool            _authenticated;
+        bool            _welcomed;   
+
+        /* =============================== Channels =============================== */
+        std::map<std::string, Channel*> _clientChannels; 
+
+        std::string     _quitReason;    
 };
 
 #endif

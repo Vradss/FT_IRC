@@ -6,35 +6,10 @@
 #include <csignal>
 #include <exception>
 
-/**
- * @file main.cpp
- * @brief Punto de entrada: valida argumentos, prepara señales y arranca Server.
- *
- * @verbatim
- *  main()
- *   ├─ parsePort()       valida <port>
- *   ├─ (valida password)
- *   ├─ setupSignals()    Ctrl+C y SIGPIPE
- *   └─ Server(port, pass) ── run()   hasta Ctrl+C
- * @endverbatim
- */
 
-/**
- * @brief 1 mientras el servidor debe seguir; Ctrl+C lo pone a 0.
- *
- * - volatile: el compilador debe releerla siempre (la cambia el handler,
- *   "por fuera" del flujo normal del programa).
- * - sig_atomic_t: tipo que se lee/escribe de una vez, seguro en un handler.
- * Leida por: Server::run() en el while.
- */
 volatile sig_atomic_t g_running = 1;
 
-/**
- * @brief Handler de SIGINT/SIGTERM. Solo cambia la bandera.
- *
- * En un handler no se debe hacer casi nada (ni cout, ni new): solo
- * marcar y dejar que el bucle salga solo y el destructor cierre los fds.
- */
+
 static void onSigint(int)
 {
     g_running = 0;
@@ -81,13 +56,7 @@ static bool parsePort(const std::string &s, int &port)
     return true;
 }
 
-/**
- * @brief ./ircserv <port> <password>
- * @return 0 al salir con Ctrl+C; 1 si los argumentos o el arranque fallan.
- *
- * El try/catch recoge el runtime_error de Server::fail() (bind ocupado...).
- * Server vive dentro del try: al salir, su destructor cierra todos los fds.
- */
+
 int main(int argc, char **argv)
 {
     if (argc != 3)
