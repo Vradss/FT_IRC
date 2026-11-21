@@ -254,7 +254,7 @@ void Server::acceptClient()
     Client client(fd);
     client.setHostname(inet_ntoa(addr.sin_addr));
 
-    _clients.insert(std::make_pair(fd, Client(fd)));
+    _clients.insert(std::make_pair(fd, client));
     std::cout << "[fd " << fd << "] connected from "
               << inet_ntoa(addr.sin_addr) << std::endl;
 }
