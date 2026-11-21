@@ -77,6 +77,7 @@ class Client
         std::string     _inBuffer; 
         std::string     _outBuffer;    
 
+
         /* ============================ Deferred close ============================ */
         bool            _toClose;           
         bool            _markedForDisconnect; 
@@ -95,6 +96,7 @@ class Client
         std::map<std::string, Channel*> _clientChannels; 
 
         std::string     _quitReason;    
+
 };
 
 #endif

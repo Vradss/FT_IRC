@@ -23,6 +23,7 @@ class Server
         Client              *findByNick(const std::string &nick);
         Channel             *findChannel(const std::string &name);
         const std::string   &getPassword() const;
+
     
         /* ============================ Command routing =========================== */
     
@@ -53,6 +54,7 @@ class Server
     
         /* =========================== Messages: PRIVMSG ========================== */
         void    privateMessage(Client *client, const std::vector<std::string> &params);
+
 
     private:
 
