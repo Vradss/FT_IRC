@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vrads <vrads@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/21 12:46:37 by vrads             #+#    #+#             */
+/*   Updated: 2026/11/21 12:47:08 by vrads            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 #include "Server.hpp"
 #include <iostream>
 #include <string>
@@ -8,7 +21,6 @@
 
 
 volatile sig_atomic_t g_running = 1;
-
 
 static void onSigint(int)
 {
@@ -35,13 +47,8 @@ static void setupSignals()
     signal(SIGPIPE, SIG_IGN);
 }
 
-/**
- * @brief Convierte <port> a int si es valido.
- * @param s         Texto de argv[1].
- * @param[out] port Puerto si es valido.
- * @return false si no son solo digitos o esta fuera de 1024-65535
- *         (por debajo de 1024 hacen falta permisos de root).
- */
+
+
 static bool parsePort(const std::string &s, int &port)
 {
     if (s.empty() || s.size() > 5)

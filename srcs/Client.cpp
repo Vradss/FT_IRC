@@ -1,31 +1,33 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Client.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vrads <vrads@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/21 12:48:31 by vrads             #+#    #+#             */
+/*   Updated: 2026/11/21 12:50:38 by vrads            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 #include "Client.hpp"
 
-/**
- * @file Client.cpp
- * @brief Implementacion de Client: solo manipula strings, ninguna llamada de red.
+/*
+ * Client: only handles strings and buffers, no network calls.
  *
- * @verbatim
- *  Server::handleRead()   -> appendInput() -> extractLine() (en bucle) / inputSize()
- *  Server::sendTo()       -> queueOutput()
- *  Server::updatePollEvents() -> hasOutput()
- *  Server::handleWrite()  -> getOutput() -> consumeOutput()
- *  Server::disconnect()   -> markToClose()
+ *  Server::handleRead()          -> appendInput() -> extractLine() / inputSize()
+ *  Server::sendTo()              -> queueOutput()
+ *  Server::updatePollEvents()    -> hasOutput()
+ *  Server::handleWrite()         -> getOutput() -> consumeOutput()
+ *  Server::disconnect()          -> markToClose()
  *  Server::removeClosedClients() -> shouldClose()
- * @endverbatim
  */
 
-/** @details Llamada por: Server::acceptClient(). _toClose empieza en false. */
-/*
- * [INTEGRACION] Faltaba inicializar los bools que añadió Aurora (Persona B).
- * En C++ un bool sin inicializar tiene BASURA: a veces true, a veces false.
- * Sintomas que daba:
- *   - _welcomed = true  -> nunca se mandaba el 001 (irssi no conecta)
- *   - _markedForDisconnect = true -> el dispatcher ignoraba TODOS los comandos
- *   - _authenticated = true -> se podia registrar sin PASS
- */
+/* Every bool must start at false: an uninitialized bool holds garbage. */
 Client::Client(int fd)
     : _fd(fd), _toClose(false), _markedForDisconnect(false),
-      _authenticated(false), _welcomed(false)  // [INTEGRACION]
+      _authenticated(false), _welcomed(false)
 {}
 
 int Client::getFd() const { return _fd; }
@@ -33,22 +35,18 @@ int Client::getFd() const { return _fd; }
 const std::string &Client::getNick() const { return _nick; }
 void Client::setNick(const std::string &nick) { _nick = nick; }
 
-/**
- * @details append(data, len) y no append(data): el buffer de recv NO acaba
- * en '\0', asi que hay que decir cuantos bytes copiar.
- * Llamada por: Server::handleRead().
- */
+/* ============================= Input buffer ============================= */
+
+/* Uses len because the recv() buffer is not null-terminated. */
 void Client::appendInput(const char *data, size_t len)
 {
     _inBuffer.append(data, len);
 }
 
-/**
- * @details Busca el primer '\n', copia lo anterior a line y lo borra del
- * buffer (incluido el '\n'). Si la linea acaba en '\r' tambien lo quita.
- * Asi aceptamos "\n" solo (nc sin -C) y "\r\n" (clientes IRC).
- * Lo que va despues del '\n' se queda para la siguiente llamada.
- * Llamada por: Server::handleRead(), en bucle hasta que devuelva false.
+/*
+ * Takes one line out of the buffer, up to the first '\n'.
+ * Strips a trailing '\r', so both "\n" (nc) and "\r\n" (IRC clients) work.
+ * Returns false when there is no full line yet.
  */
 bool Client::extractLine(std::string &line)
 {
@@ -64,44 +62,24 @@ bool Client::extractLine(std::string &line)
 
 size_t Client::inputSize() const { return _inBuffer.size(); }
 
+/* ============================= Output buffer ============================ */
+
 void Client::queueOutput(const std::string &data) { _outBuffer += data; }
 bool Client::hasOutput() const { return !_outBuffer.empty(); }
 const std::string &Client::getOutput() const { return _outBuffer; }
-/**
- * @details Borra solo los n primeros bytes: si send() fue parcial, el resto
- * sigue en _outBuffer y hasOutput() hara que se pida POLLOUT otra vez.
- * Llamada por: Server::handleWrite().
- */
 void Client::consumeOutput(size_t n) { _outBuffer.erase(0, n); }
 
-void Client::markToClose() { _toClose = true; }
-bool Client::shouldClose() const { return _toClose; }
-
-
-void Client::addChannel(const std::string &name, Channel *channel)
-{
-    if (!channel)
-        return;
-    _clientChannels[name] = channel;
-}
-
-
-std::string Client::getPrefix() const
-{
-    return _nick + "!" + _username + "@" + _hostname;
-}
-
- 
+/* Adds a message to the output buffer. The server sends it on POLLOUT. */
 void Client::queueMessage(const std::string &msg)
 {
     queueOutput(msg);
 }
 
+/* ============================== Disconnect ============================== */
 
-bool Client::isRegistered() const
-{ 
-    return _authenticated && !_nick.empty() && !_username.empty();
-}
+void Client::markToClose() { _toClose = true; }
+bool Client::shouldClose() const { return _toClose; }
+
 
 bool Client::isMarkedForDisconnect() const
 {
@@ -113,7 +91,25 @@ void Client::markForDisconnect()
     _markedForDisconnect = true;
 }
 
+void Client::setQuitReason(const std::string &reason)
+{
+    _quitReason = reason;
+}
 
+const std::string &Client::getQuitReason() const
+{
+    return _quitReason;
+}
+
+/* ============================= Registration ============================= */
+
+/* Computed instead of stored, so it can never get out of sync. */
+bool Client::isRegistered() const
+{
+    return _authenticated && !_nick.empty() && !_username.empty();
+}
+
+/* True once the client sent the correct PASS. */
 bool Client::isAuthenticated() const
 {
     return _authenticated;
@@ -124,6 +120,7 @@ void Client::setAuthenticated(bool value)
     _authenticated = value;
 }
 
+/* True once the 001 welcome was sent. */
 bool Client::hasWelcomed() const
 {
     return _welcomed;
@@ -134,12 +131,13 @@ void Client::setWelcomed(bool value)
     _welcomed = value;
 }
 
+/* =============================== Identity =============================== */
 
-const std::map<std::string, Channel *> &Client::getChannels() const
+/* IRC prefix: nick!user@host */
+std::string Client::getPrefix() const
 {
-    return _clientChannels;
+    return _nick + "!" + _username + "@" + _hostname;
 }
-
 
 const std::string &Client::getUsername() const
 {
@@ -156,22 +154,27 @@ void Client::setRealname(const std::string &realname)
     _realname = realname;
 }
 
+void Client::setHostname(const std::string &hostname)
+{
+    _hostname = hostname;
+}
+
+/* =============================== Channels =============================== */
+
+void Client::addChannel(const std::string &name, Channel *channel)
+{
+    if (!channel)
+        return;
+    _clientChannels[name] = channel;
+}
+
 void Client::removeChannel(const std::string &name)
 {
     _clientChannels.erase(name);
 }
 
-void Client::setQuitReason(const std::string &reason)
+/* Read-only. Used by NICK and QUIT to know who to notify. */
+const std::map<std::string, Channel *> &Client::getChannels() const
 {
-    _quitReason = reason;
-}
-
-const std::string &Client::getQuitReason() const
-{
-    return _quitReason;
-}
-
-void Client::setHostname(const std::string &hostname)
-{
-    _hostname = hostname;
+    return _clientChannels;
 }
