@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dispatcher.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: ccarro-d <ccarro-d@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/15 12:02:18 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/21 11:59:28 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/21 14:51:16 by ccarro-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ enum CommandId
     CMD_QUIT,
     CMD_PING,
     CMD_PONG,
-    CMD_CAP
+    CMD_CAP,
+	CMD_MODE
 };
 
 struct CommandEntry
@@ -67,7 +68,8 @@ static const CommandEntry g_commands[] =
     { "QUIT",    CMD_QUIT },
     { "PING",    CMD_PING },
     { "PONG",    CMD_PONG },
-    { "CAP",     CMD_CAP }
+    { "CAP",     CMD_CAP },
+	{ "MODE",    CMD_MODE }
 };
 
 static CommandId findCommand(const std::string &cmd)
@@ -159,6 +161,9 @@ void Server::dispatcher(Client *client, const std::string &command, const std::v
             break;
         case CMD_CAP:
             handleCap(client, params);
+            break;
+        case CMD_MODE:
+            handleMode(client, params);
             break;
         case CMD_UNKNOWN:
         default:

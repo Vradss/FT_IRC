@@ -35,7 +35,10 @@ SRCS     = main.cpp \
 		   Commands/ping.cpp \
 		   Commands/pong.cpp \
 		   Commands/cap.cpp \
-		   channel_actions.cpp
+		   Commands/invite.cpp \
+		   Commands/topic.cpp \
+		   Commands/mode.cpp \
+
 
 
 OBJ_DIR = obj

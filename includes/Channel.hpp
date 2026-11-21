@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: ccarro-d <ccarro-d@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 19:27:38 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/21 11:56:15 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/21 15:04:01 by ccarro-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,17 @@ class Channel
 
         /* ========================== Modes: +i +t +k +l ========================== */
         bool                            isInviteOnly() const;
+		void                            changeInviteOnly(bool chInviteOnly); 
         bool                            isTopicRestricted() const;
+		void                            changeTopicRestricted(bool topicRestricted); 
         const std::string               &getChKey() const;
         void                            setChKey(const std::string &chKey);
         bool                            getHasChKey() const;
         void                            setHasChKey(const bool hasChKey);
         bool                            hasUserLimit() const;
         size_t                          getUserLimit() const;
+		void                            setUserLimit(size_t chUserLimit);
+		std::string                     getChModes() const;
 
 
     private:
@@ -83,7 +87,7 @@ class Channel
         size_t                          _chUserLimit;
 
         std::vector<Client *>           _chJoinOrder;
-        bool                            _topicRestricted; // MODE +t (CÉSAR)
+        bool                            _topicRestricted;
 };
 
 #endif

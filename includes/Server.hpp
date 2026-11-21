@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vrads <vrads@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ccarro-d <ccarro-d@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/21 12:43:52 by vrads             #+#    #+#             */
-/*   Updated: 2026/11/21 12:44:04 by vrads            ###   ########.fr       */
+/*   Updated: 2026/11/21 14:53:36 by ccarro-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ class Server
         void    handleQuit(Client *client, const std::vector<std::string> &params);
         void    cleanupClient(Client *client);
     
-        /* ============ Channels: JOIN PART KICK TOPIC INVITE ============ */
+        /* ============ Channels: JOIN PART KICK TOPIC INVITE MODE ============ */
         void    handleJoin(Client *client, const std::vector<std::string> &params);
         int     joinChannel(Client *client, const std::string &chName, const std::string &key);
         void    handlePart(Client *client, const std::vector<std::string> &params);
@@ -65,6 +65,8 @@ class Server
         void    handleKick(Client *client, const std::vector<std::string> &params);
         void    handleTopic(Client *client, const std::vector<std::string> &params);
         void    handleInvite(Client *client, const std::vector<std::string> &params);
+		void    handleMode(Client *client, const std::vector<std::string> &params);
+
     
         /* =========================== Messages: PRIVMSG ========================== */
         void    privateMessage(Client *client, const std::vector<std::string> &params);

@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
+/*   By: ccarro-d <ccarro-d@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 20:25:49 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/21 11:45:13 by aumoreno         ###   ########.fr       */
+/*   Updated: 2026/11/21 15:06:08 by ccarro-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
-Channel::Channel() : _chName(""), _chTopic(""), _chUsers(), _chOperators(), _chKey(""), _hasChKey(false),
+Channel::Channel() : _chName(""), _chTopic(""), _chUsers(), _chOperators(), _chInvited(), _chKey(""), _hasChKey(false),
       _chInviteOnly(false), _chUserLimit(0), _topicRestricted(false) {}
 
 
 Channel::Channel(const std::string &name) :
-_chName(name), _chTopic(""), _chUsers(), _chKey(""), _hasChKey(false),
+_chName(name), _chTopic(""), _chUsers(), _chOperators(), _chInvited(), _chKey(""), _hasChKey(false),
       _chInviteOnly(false), _chUserLimit(0), _topicRestricted(false)
 {
 }
@@ -151,12 +151,29 @@ bool Channel::isInviteOnly() const
     return _chInviteOnly;
 }
 
+void Channel::changeInviteOnly(bool chInviteOnly)
+{
+	_chInviteOnly = chInviteOnly;
+}
+
 
 bool Channel::isInvited(Client *client) const
 {
     if (!client)
         return false;
     return _chInvited.count(client) > 0;
+}
+
+/**
+ * @brief Registra a un cliente como invitado al canal.
+ * @param[in] client Cliente que podrá acceder al canal; los punteros nulos se
+ * ignoran y las invitaciones duplicadas no alteran el conjunto.
+ */
+void Channel::addInvite(Client *client)
+{
+    if (!client)
+        return;
+    _chInvited.insert(client);
 }
 
 void Channel::removeInvite(Client *client)
@@ -174,6 +191,24 @@ bool Channel::hasUserLimit() const
 size_t Channel::getUserLimit() const
 {
     return _chUserLimit;
+}
+
+void Channel::setUserLimit(size_t chUserLimit)
+{
+	_chUserLimit = chUserLimit;
+}
+
+
+/**
+ * @brief Indica si solo los operadores pueden modificar el topic del canal.
+ * @return true si el modo de topic restringido está activo; false en caso
+ * contrario.
+ */
+bool Channel::isTopicRestricted() const {return (_topicRestricted);}
+
+void Channel::changeTopicRestricted(bool topicRestricted)
+{
+	_topicRestricted = topicRestricted;
 }
 
 
