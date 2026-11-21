@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ping.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vflorez <vflorez@student.42.fr>            +#+  +:+       +#+        */
+/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/18 21:34:12 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/19 21:32:00 by vflorez          ###   ########.fr       */
+/*   Updated: 2026/11/21 11:36:13 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,10 @@ void Server::handlePing(Client *client, const std::vector<std::string> &params)
         return;
     }
 
-    // texto que tenemos que mandar para que lo devuelva pong
-    // el segundo parámetro, es el "destino" del RFC antiguo lo ignoramos
+
     std::string pingText = params[0];
     if (pingText.size() > PING_MAX_TEXT)
         pingText = pingText.substr(0, PING_MAX_TEXT);
 
-    // respuesta solo a quien mandó el PING, no se manda a canales
     client->queueMessage(srv + "PONG " + _serverName + " :" + pingText + "\r\n");
 }

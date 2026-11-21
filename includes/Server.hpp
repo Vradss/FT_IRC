@@ -57,11 +57,6 @@ class Server
         
         int joinChannel(Client *client, const std::string &chName, const std::string &key);
         void handleJoin(Client *client, const std::vector<std::string> &params);
-
-        /*esta funcion es para PASS y básicamente 
-            será al principio de que el cliente se conecte que para registrarse tendrá que poner primero la contraseña
-            no podrá hacer nada sin la contraseña
-        */
         void handlePass(Client *client, const std::vector<std::string> &params);
         void handleNick(Client *client, const std::vector<std::string> &params);
         void handleUser(Client *client, const std::vector<std::string> &params);

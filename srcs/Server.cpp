@@ -375,7 +375,7 @@ void Server::handleLine(Client &client, const std::string &line)
  */
 void Server::removeClosedClients()
 {
-    for (size_t i = _fds.size(); i-- > 1; )         // de atras a delante, sin tocar [0]
+    for (size_t i = _fds.size(); i-- > 1; ) 
     {
         int fd = _fds[i].fd;
         std::map<int, Client>::iterator it = _clients.find(fd);
@@ -435,14 +435,11 @@ const std::string &Server::getPassword() const { return _password; }
 
 void Server::cleanupClient(Client *client)
 {
-    // Motivo: el de QUIT si lo hubo; si no (Ctrl+C, error de red...), genérico
+
     std::string reason = client->getQuitReason();
     if (reason.empty())
         reason = "Connection closed";
 
-    // COPIA de los nombres de canal: leaveChannel modifica _clientChannels
-    // (y puede liberar canales), así que no se puede recorrer directamente.
-    // De paso se juntan los destinatarios del aviso (set = sin repetidos).
     std::vector<std::string> names;
     std::set<Client *> recipients;
 
@@ -456,16 +453,15 @@ void Server::cleanupClient(Client *client)
         for (std::map<int, Client *>::const_iterator uit = users.begin();
              uit != users.end(); ++uit)
         {
-            if (uit->second == client)          // sin aviso a quien se va
+            if (uit->second == client) 
                 continue;
-            if (uit->second->shouldClose())     // ya se está cerrando
+            if (uit->second->shouldClose()) 
                 continue;
             recipients.insert(uit->second);
         }
     }
 
-    // 1. AVISO (antes de limpiar: después ya no hay de dónde sacar los datos).
-    // Si no estaba en ningún canal (p. ej. sin registrar), no hay a quién avisar.
+
     if (!recipients.empty())
     {
         const std::string msg = ":" + client->getPrefix() + " QUIT :" + reason + "\r\n";
@@ -473,7 +469,7 @@ void Server::cleanupClient(Client *client)
             (*rit)->queueMessage(msg);
     }
 
-    // 2. SALIR DE SUS CANALES (los vacíos se borran dentro de leaveChannel)
+
     for (size_t i = 0; i < names.size(); ++i)
     {
         Channel *channel = findChannel(names[i]);
@@ -481,8 +477,6 @@ void Server::cleanupClient(Client *client)
             leaveChannel(client, channel);
     }
 
-    // 3. INVITACIONES: puede estar invitado a canales donde NO entró, y esos
-    // canales guardan un puntero a él. Hay que mirar TODOS los canales.
     for (std::map<std::string, Channel *>::iterator it = _channels.begin();
          it != _channels.end(); ++it)
         it->second->removeInvite(client);

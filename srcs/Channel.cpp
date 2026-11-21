@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ccarro-d <ccarro-d@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/11 20:25:49 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/20 02:17:01 by ccarro-d         ###   ########.fr       */
+/*   Updated: 2026/11/21 11:45:13 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,24 +109,17 @@ void Channel::setHasChKey(bool hasChKey)
 
 bool Channel::addUser(Client *client)
 {
-    /*
+
     if (!client)
         return false;
-    // insert() no sobrescribe si la clave (el fd) ya existe
-    // .second dice si se insertó, buscamos el value para luego devolverlo y ver si se ha insertado o no 
-    // https://stackoverflow.com/questions/60766336/map-c-using-itr-first-second-vs-itr-second
-    return _chUsers.insert(std::make_pair(client->getFd(), client)).second;*/
-    if (!client)
-        return false;
-    // insert() no sobrescribe si la clave ya existe; .second dice si se insertó
     bool inserted = _chUsers.insert(std::make_pair(client->getFd(), client)).second;
     if (inserted)
-        _chJoinOrder.push_back(client);     // al final = el más reciente
+        _chJoinOrder.push_back(client);
     return inserted;
 
 }
 
-//para saber si el cliente es operador del canal 
+
 bool Channel::isOperator(Client *client) const
 {
     if (!client)
@@ -135,21 +128,17 @@ bool Channel::isOperator(Client *client) const
 }
 
 
-// Da privilegios de operador a un cliente que YA es miembro del canal.
-// Devuelve true si se añadió, false si no es miembro, ya era operador
-// o el puntero es NULL.
+
 bool Channel::addOperator(Client *client)
 {
     if (!client)
         return false;
-    // Un operador siempre tiene que ser miembro.
-    //si no encontramos al usuario false 
+
     if (_chUsers.find(client->getFd()) == _chUsers.end())
         return false;
     return _chOperators.insert(std::make_pair(client->getFd(), client)).second;
 }
 
-// para saber si un user es miembro del canal 
 bool Channel::isMember(Client *client) const
 {
     if (!client)
@@ -157,13 +146,12 @@ bool Channel::isMember(Client *client) const
     return _chUsers.find(client->getFd()) != _chUsers.end();
 }
 
-// para saber si un canal solo va por invitación 
 bool Channel::isInviteOnly() const
 {
     return _chInviteOnly;
 }
 
-// ¿Tiene el cliente una invitación pendiente a este canal? NO ENTIENDO DEL TODO 
+
 bool Channel::isInvited(Client *client) const
 {
     if (!client)
@@ -171,8 +159,6 @@ bool Channel::isInvited(Client *client) const
     return _chInvited.count(client) > 0;
 }
 
-//borra la invitación pendiente del cliente (si la tenía)
-//si no estaba en la lista no hace nada
 void Channel::removeInvite(Client *client)
 {
     if (!client)
@@ -180,14 +166,11 @@ void Channel::removeInvite(Client *client)
     _chInvited.erase(client);
 }
 
-// para saber si el canal tiene límite de usuarios 
 bool Channel::hasUserLimit() const
 {
-    return _chUserLimit > 0; // si el limite del usuario es mayor que 0 devuelve true y por tanto tiene user limit
-    //esto lo hago así porque no me apetece tener muchos booleanos 
+    return _chUserLimit > 0;
 }
 
-// para saber el número máximo de usuarios 
 size_t Channel::getUserLimit() const
 {
     return _chUserLimit;
@@ -196,10 +179,7 @@ size_t Channel::getUserLimit() const
 
 void Channel::removeUser(Client *client)
 {
-    /*
-    if (!client)
-        return;
-    _chUsers.erase(client->getFd());*/
+
     if (!client)
         return;
     _chUsers.erase(client->getFd());
@@ -215,7 +195,6 @@ void Channel::removeUser(Client *client)
     }
 }
 
-// Quita al cliente de la lista de operadores
 void Channel::removeOperator(Client *client)
 {
     if (!client)
@@ -223,7 +202,6 @@ void Channel::removeOperator(Client *client)
     _chOperators.erase(client->getFd());
 }
 
-// si el canal está vacio, esto es para sabe si borro o no el canal 
 bool Channel::isEmpty() const
 {
     return _chUsers.empty();
@@ -236,8 +214,6 @@ bool Channel::hasOperators() const
 }
 
 
-
-// para promocionar el miembro mas antiguo a operador
 Client *Channel::getOldestMember() const
 {
     for (size_t i = 0; i < _chJoinOrder.size(); ++i)

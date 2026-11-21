@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vflorez <vflorez@student.42.fr>            +#+  +:+       +#+        */
+/*   By: aumoreno < aumoreno@student.42madrid.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/17 19:53:20 by aumoreno          #+#    #+#             */
-/*   Updated: 2026/11/19 21:31:56 by vflorez          ###   ########.fr       */
+/*   Updated: 2026/11/21 11:36:01 by aumoreno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 static const size_t PART_MAX_REASON = 300;
 
-//TO-DO: ponerla en un fichero de utilidades y borrar esto de aqui y de join_utils.cpp
 static std::vector<std::string> splitByComma(const std::string &s)
 {
     std::vector<std::string> result;
@@ -50,7 +49,6 @@ void Server::leaveChannel(Client *client, Channel *channel)
 {
     const std::string chKey = toLower(channel->getChName());
 
-    // Hay que saberlo ANTES de quitarle: después ya no es operador
     const bool wasOperator = channel->isOperator(client);
 
     channel->removeUser(client);
@@ -58,22 +56,18 @@ void Server::leaveChannel(Client *client, Channel *channel)
     channel->removeInvite(client);
     client->removeChannel(chKey);
 
-    // Canal vacío: se borra, y no hay a quién ascender
     if (channel->isEmpty())
     {
-        _channels.erase(chKey);     // primero se saca del mapa
-        delete channel;             //y luego se libera. No volver a usarlo.
+        _channels.erase(chKey);
+        delete channel;
         return;
     }
 
-    // Se fue el ÚLTIMO operador y quedan miembros => asciende al más antiguo
     if (wasOperator && !channel->hasOperators())
     {
         Client *next = channel->getOldestMember();
         if (next && channel->addOperator(next))
         {
-            // Hay que AVISAR a todos, o sus clientes seguirían viendo
-            // al nuevo operador sin '@' (estaria desincronizado).
             const std::string msg = ":" + _serverName + " MODE " + channel->getChName()
                 + " +o " + next->getNick() + "\r\n";
 
@@ -89,70 +83,50 @@ void Server::leaveChannel(Client *client, Channel *channel)
     }
 }
 
-//comprobamos que vienen los parametros 
-//minimo un canal, si no no funciona 
-//tenemos que ver si queda más gente en el canal
-//si no queda más nadie, ¿borramos el canal? 
-//si queda más gente y quien se va es operador hay que borrarlo de la lista de operadores
-// si no quedan mas operadores pues ya está pero en ese canal no se podrá ya hacer "nada"
-//le quitamos de la lista de invitados? 
-//CUIDARSE DE LOS LEAKS !!!! ESTAMOS BORRANDO COSAS 
-//mandamos los mensajes a los canales ANTES DE QUITAR AL CLIENTE DEL CANAL y el mensaje lo mandamos aunque no quede nadie en el canal
-//lanzar errores adecuados 
-//puede venir una lista de canales 
-//importante el canal será el que tengamos guardado no el que haya introducido el user
-//quitar el canal de la lista del cliente 
+
 void Server::handlePart(Client *client, const std::vector<std::string> &params)
 {
     const std::string srv = ":" + _serverName + " ";
     const std::string nick = client->getNick();
 
-    //no hay canal
     if (params.empty() || params[0].empty())
     {
         client->queueMessage(srv + "461 " + nick + " PART :Not enough parameters\r\n");
         return;
     }
 
-    //motivo (es opcional) sin los dos : 
     std::string reason;
-    //comprobamos si viene mas de un parametro, si sí es que viene el motivo
     if (params.size() > 1)
     {
         reason = params[1];
-        if (reason.size() > PART_MAX_REASON) //esto es el límite de caracteres 
+        if (reason.size() > PART_MAX_REASON) 
             reason = reason.substr(0, PART_MAX_REASON);
     }
 
-    // pillamos los canales: 
     const std::vector<std::string> chNames = splitByComma(params[0]);
-    std::set<std::string> chNamesHandled; //para ignorar los repetidos, por eso usamos set
+    std::set<std::string> chNamesHandled;
 
-    //recorrer la lista 
     for (size_t i = 0; i < chNames.size(); ++i)
     {
-        if (chNames[i].empty()) //si viene vacio lo ignoramos 
+        if (chNames[i].empty()) 
             continue;
-        if (!chNamesHandled.insert(toLower(chNames[i])).second) //comprobamos que no está en handled porque si está es que ya lo procesó
+        if (!chNamesHandled.insert(toLower(chNames[i])).second)
             continue;
 
-        //buscamos el canal
         Channel *channel = findChannel(chNames[i]);
-        //si no existe => fallo 
         if (!channel) 
         {
             client->queueMessage(srv + "403 " + nick + " " + chNames[i] + " :No such channel\r\n");
             continue;
         }
-        //miramos si el user no es miembro o sí 
+
         if (!channel->isMember(client))
         {
             client->queueMessage(srv + "442 " + nick + " " + channel->getChName()
                 + " :You're not on that channel\r\n");
             continue;
         }
-        //ya ponemos el aviso, hay que hacerlo antes de que el miembro se vaya del canal porque si el miembro no recibe el mensaje
-        //además que puede haber problemas de memoria 
+
         std::string msg = ":" + client->getPrefix() + " PART " + channel->getChName();
         if (!reason.empty())
             msg += " :" + reason;
@@ -162,7 +136,6 @@ void Server::handlePart(Client *client, const std::vector<std::string> &params)
         for (std::map<int, Client *>::const_iterator uit = users.begin(); uit != users.end(); ++uit)
             uit->second->queueMessage(msg);
 
-        //lo quitamos del canal 
         leaveChannel(client, channel);
     }
     

@@ -78,7 +78,6 @@ void Client::markToClose() { _toClose = true; }
 bool Client::shouldClose() const { return _toClose; }
 
 
-//aurora 
 void Client::addChannel(const std::string &name, Channel *channel)
 {
     if (!channel)
@@ -86,28 +85,21 @@ void Client::addChannel(const std::string &name, Channel *channel)
     _clientChannels[name] = channel;
 }
 
-// Prefijo IRC del cliente: nick!user@host
-// Devuelve por valor porque se construye en el momento (no hay nada guardado que se pueda devolver por referencia)
+
 std::string Client::getPrefix() const
 {
     return _nick + "!" + _username + "@" + _hostname;
 }
 
-// SOLO añade el mensaje al buffer de salida. NO llama a send() 
-// el envío lo hace el server cuando poll() marque el fd como POLLOUT ??? 
+ 
 void Client::queueMessage(const std::string &msg)
 {
-    //_outBuffer += msg; TO-DO !!!!
     queueOutput(msg);
 }
 
 
-/* METODOS PARA VER QUE USER ESTÁ CONECTAU, REGISTRAU Y TAL */
 bool Client::isRegistered() const
-{
-    // esto lo compruebo así en vez de tener un booleano _registered para evitar desincronizaciones 
-    //si el cliente tiene un nick vacio o asi o falla un USER 
-    // TO-DO: mirar si tengo que hacer más comprobaciones aqui o si esto es necesario o es fumada 
+{ 
     return _authenticated && !_nick.empty() && !_username.empty();
 }
 
@@ -121,24 +113,17 @@ void Client::markForDisconnect()
     _markedForDisconnect = true;
 }
 
-/**
- * métodos para comprobar si está auth
- * (esto servirá para el nick y user para que nos deje registrarnos)
- */
+
 bool Client::isAuthenticated() const
 {
     return _authenticated;
 }
 
-/*
-    una vez la contraseña sea correcta o no, le marcamos el value para saber 
-*/
 void Client::setAuthenticated(bool value)
 {
     _authenticated = value;
 }
 
-/**METODOS PARA SABER SI HACEMOS LA BIENVENIDA O NO */
 bool Client::hasWelcomed() const
 {
     return _welcomed;
@@ -150,8 +135,6 @@ void Client::setWelcomed(bool value)
 }
 
 
-// Solo lectura: lo usa handleNick para saber a quién avisar de que alguien se ha modificado el nick
-// _clientChannels es std::map<std::string, Channel*> 
 const std::map<std::string, Channel *> &Client::getChannels() const
 {
     return _clientChannels;
