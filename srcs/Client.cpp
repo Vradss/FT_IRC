@@ -70,3 +70,46 @@ void Client::consumeOutput(size_t n) { _outBuffer.erase(0, n); }
 
 void Client::markToClose() { _toClose = true; }
 bool Client::shouldClose() const { return _toClose; }
+
+
+void Client::addChannel(const std::string &name, Channel *channel)
+{
+    if (!channel)
+        return;
+    _clientChannels[name] = channel;
+}
+
+// Prefijo IRC del cliente: nick!user@host
+// Devuelve por valor porque se construye en el momento (no hay nada guardado que se pueda devolver por referencia)
+std::string Client::getPrefix() const
+{
+    return _nick + "!" + _username + "@" + _hostname;
+}
+
+// SOLO añade el mensaje al buffer de salida. NO llama a send() 
+// el envío lo hace el server cuando poll() marque el fd como POLLOUT ??? 
+void Client::queueMessage(const std::string &msg)
+{
+    //_outBuffer += msg; TO-DO !!!!
+    queueOutput(msg);
+}
+
+
+/* METODOS PARA VER QUE USER ESTÁ CONECTAU, REGISTRAU Y TAL */
+bool Client::isRegistered() const
+{
+    // esto lo compruebo así en vez de tener un booleano _registered para evitar desincronizaciones 
+    //si el cliente tiene un nick vacio o asi o falla un USER 
+    // TO-DO: mirar si tengo que hacer más comprobaciones aqui o si esto es necesario o es fumada 
+    return _authenticated && !_nick.empty() && !_username.empty();
+}
+
+bool Client::isMarkedForDisconnect() const
+{
+    return _markedForDisconnect;
+}
+
+void Client::markForDisconnect()
+{
+    _markedForDisconnect = true;
+}

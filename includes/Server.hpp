@@ -5,7 +5,9 @@
 #include <vector>
 #include <map>
 #include <poll.h>
+#include <vector>
 #include "Client.hpp"
+#include "Channel.hpp"
 
 /**
  * @file Server.hpp
@@ -46,12 +48,18 @@ class Server
         Client              *findByNick(const std::string &nick);
         const std::string   &getPassword() const;
 
+        //aurora: 
+        void dispatcher(Client *client, const std::string &command, const std::vector<std::string> &params);
+        int joinChannel(Client *client, const std::string &chName, const std::string &key);
+        void handleJoin(Client *client, const std::vector<std::string> &params);
+
     private:
 
         //Estados, evaluar si necesitamo mas? 
         int                         _port;      ///< Puerto en el que escuchamos.
         std::string                 _password;  ///< Contraseña de ./ircserv <port> <password>.
         int                         _listenFd;  ///< Socket de escucha (solo sirve para accept).
+        std::string                 _serverName; 
         //     struct pollfd {
         //     int   fd;       // qué socket
         //     short events;   // qué QUIERES vigilar (lo pones tú: POLLIN, POLLOUT)
@@ -62,6 +70,7 @@ class Server
         std::vector<struct pollfd>  _fds;       ///< Array que recibe poll(). [0] = _listenFd.
         std::map<int, Client>       _clients;   ///< fd -> Client. El map no mueve sus elementos,
                                                 ///< asi las referencias Client& siguen validas.
+        std::map<std::string, Channel*> _channels; 
 
 
         //Funciones para runSocket                                        
@@ -76,6 +85,7 @@ class Server
 
         Server(const Server &);
         Server &operator=(const Server &);
-    };
+
+};
 
 #endif

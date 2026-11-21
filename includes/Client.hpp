@@ -3,6 +3,8 @@
 
 #include <string>
 #include <cstddef>
+#include <map>
+class Channel;
 
 /**
  * @file Client.hpp
@@ -56,12 +58,28 @@ class Client
         void                markToClose();
         bool                shouldClose() const;
 
+        //AURORA:
+        void addChannel(const std::string &name, Channel *channel);
+        std::string getPrefix() const; 
+        void queueMessage(const std::string &msg); 
+        bool isRegistered() const;
+        bool isMarkedForDisconnect() const; // esto para ver el estado   
+        void markForDisconnect(); //esto para marcarlo como desconectado
+
     private:
         int         _fd;         ///< Socket TCP del cliente. Lo cierra Server, no Client.
         std::string _nick;       ///< (B) Nick actual; "" hasta que haga NICK. MODIFICAR OJITO
         std::string _inBuffer;   ///< Bytes recibidos sin '\n' todavia del cliente
         std::string _outBuffer;  ///< Bytes pendientes de send().
         bool        _toClose;    ///< true = cerrar en removeClosedClients().
+
+        //aurora 
+        std::map<std::string, Channel*> _clientChannels; //la lista de canales a la que pertenece el cliente
+        std::string _username; 
+        std::string _hostname; 
+        bool _authenticated; // esto ponerlo a true cuando el user se autentique con la PASS del server si no puede pasar por logado y no 
+        bool _markedForDisconnect;  //para si un comando es QUIT y ya el cliente lo marcó como desconectau para que no se ejecute nada más del buffer
+    
 };
 
 #endif
